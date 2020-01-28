@@ -1,0 +1,19 @@
+<h2>Login Form</h2>
+<form (submit)="onSubmit()" name="form">
+    <tr>
+        <td>*Username: </td>
+        <td><input type="text" name="username" required [(ngModel)]="credentials.username" #username="ngModel"></td>
+    </tr><br>
+    <tr>
+        <td>*Password: </td>
+        <td><input type="password" name="password" name="password" required 
+                [(ngModel)]="credentials.password" #password='ngModel'></td>
+    </tr><br>
+    {{ message }}
+    <tr>
+        <input type="submit" value="submit">
+    </tr>
+</form>
+<div>
+    <input type="button" value="register" (click)="register()">
+</div>

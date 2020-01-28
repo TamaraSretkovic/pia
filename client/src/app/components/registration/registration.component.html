@@ -1,0 +1,66 @@
+<div style="text-align:center">
+    <h2>Registration: </h2>
+
+    <form (submit)="onSubmit()" name="form">
+        <tr>
+            <td>*First Name: </td>
+            <td><input type="text" name="first" required [(ngModel)]="user.first" #first="ngModel"></td>
+            <td style="color: red" *ngIf="!first.valid">First name is required</td>
+        </tr><br>
+        <tr>
+            <td>*Last Name: </td>
+            <td><input type="text" name="last" required [(ngModel)]="user.last" #last="ngModel"></td>
+            <td style="color: red" *ngIf="!last.valid">Last name is required</td>
+        </tr><br>
+        <tr>
+            <td>*Username: </td>
+            <td><input type="text" name="username" required [(ngModel)]="user.username" #username="ngModel"></td>
+            <td style="color: red" *ngIf="!username.valid">Must be unique</td>
+        </tr><br>
+        <tr>
+
+            <td>*Password: </td>
+            <td><input type="password" name="password" name="password" required minlength="8"
+                    pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$"
+                    [(ngModel)]="user.password" #password='ngModel'></td>
+            <td style="color: red" *ngIf="!password.valid">Password must be at least 8 characters, conatin lowercase
+                letters, at least one uppercase
+                letter, one special charcater and one number.</td>
+        </tr><br>
+        <tr>
+            <td>*Confirm PW: </td>
+            <td><input type="password" name="confirm" required minlength="8" maxlength="24" [(ngModel)]="user.confirm"
+                    pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" #confirm='ngModel'></td>
+            <td style="color: red" *ngIf="user.password!=user.confirm">Passwords must match</td>
+        </tr><br>
+        <tr>
+            <td>*JMBG: </td>
+            <td><input type="number" name="jmbg" required [(ngModel)]="user.jmbg" #jmbg='ngModel'></td>
+            <td style="color: red" *ngIf="!jmbg.valid">JMBG is required</td>
+        </tr><br>
+        <tr>
+            <td>*Phone number: </td>
+            <td><input type="text" name="phone" required [(ngModel)]="user.phone"
+                    pattern="^[2-9]\d{2}-\d{3}-\d{4}$" #phone='ngModel'></td>
+            <td style="color: red" *ngIf="!phone.valid">Check form ANN-NNN-NNNN</td>
+        </tr><br>
+        <tr>
+            <td>*Email: </td>
+            <td><input type="text" name="email" required minlength="4" [(ngModel)]="user.email" #email="ngModel"
+                    pattern="^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$"></td>
+            <td style="color: red" *ngIf="!email.valid">Please enter a proper email address</td>
+        </tr><br>
+        <tr>
+            <td>*Date of birth: </td>
+            <td><input type="date" name="date" required minlength="4" [(ngModel)]="user.date" #date="ngModel">
+            </td>
+            <td style="color: red" *ngIf="!date.valid">Please enter birth place</td>
+        </tr><br>
+        <tr>
+            <td>*Birth plase: </td>
+            <td><input type="text" name="birtPlace" required minlength="4" [(ngModel)]="user.birtPlace"
+                    #birtPlace="ngModel"></td>
+            <td style="color: red" *ngIf="!birtPlace.valid">Please enter birth place</td>
+        </tr><br>
+        <input type="submit" value="submit">
+    </form>
