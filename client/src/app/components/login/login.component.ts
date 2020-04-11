@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CredentialsModel } from 'src/app/models/credentials.model';
+import { Component } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 
@@ -8,37 +8,44 @@ import { ApiService } from 'src/app/services/api.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 
-  credentials: CredentialsModel;
-  message: string;
+  loginForm: FormGroup = new FormGroup({
+    username: new FormControl('', Validators.required),
+    password: new FormControl('', Validators.required)
+  });
 
-  constructor(private router: Router, private api: ApiService) {
-    this.message = '';
-    this.credentials = {
-      username: '',
-      password: ''
-    };
+  showErrorMessage = false;
+  showServerErrorMessage = false;
+
+  constructor(private router: Router, private service: ApiService) {
+    // this.service.setBaseUrl(`${window.location.protocol}//${window.location.hostname}:${window.location.port}`);
+    this.service.setBaseUrl(`${window.location.protocol}//${window.location.hostname}:${window.location.port}`);
+
   }
 
-  ngOnInit() {
-  }
+  login(): void {
+    if (this.loginForm.invalid) {
+      this.showErrorMessage = true;
+      return;
+    }
+    const username = this.loginForm.value.username;
+    const password = this.loginForm.value.password;
 
-  register() {
-    this.router.navigate(['registration']);
-  }
-
-  onSubmit() {
-    this.api.login(this.credentials).subscribe(res => {
-      console.log(res);
-      // redirect to user
+    this.service.login(this.loginForm.value).subscribe(data => {
+      this.service.setCredentials(username, password);
+      // this.service.nextPage();
+      this.showErrorMessage = false;
     },
       err => {
-        console.log(err);
-        this.message = 'Wrong credentials';
-        this.credentials.password = '';
-        this.credentials.username = '';
+        this.showErrorMessage = true;
       });
+
+
+    this.loginForm.reset();
   }
 
+  register(): void {
+    this.router.navigate(['/registration']);
+  }
 }

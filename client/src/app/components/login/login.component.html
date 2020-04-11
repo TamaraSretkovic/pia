@@ -1,19 +1,30 @@
-<h2>Login Form</h2>
-<form (submit)="onSubmit()" name="form">
-    <tr>
-        <td>*Username: </td>
-        <td><input type="text" name="username" required [(ngModel)]="credentials.username" #username="ngModel"></td>
-    </tr><br>
-    <tr>
-        <td>*Password: </td>
-        <td><input type="password" name="password" name="password" required 
-                [(ngModel)]="credentials.password" #password='ngModel'></td>
-    </tr><br>
-    {{ message }}
-    <tr>
-        <input type="submit" value="submit">
-    </tr>
-</form>
-<div>
-    <input type="button" value="register" (click)="register()">
+<div class="container">
+    <div class="row">
+        <form class="clr-form" [formGroup]="loginForm">
+            <div class="userInfo">
+                <span class="userLabel">Username</span>
+                <input type="text" class="userInput" name="username" placeholder="username"
+                    formControlName="username" autofocus="autofocus" required />
+            </div>
+            <div class="userInfo">
+                <span class="userLabel">Password</span>
+                <input type="password" class="userInput" name="loginForm.password" placeholder="password"
+                    formControlName="password" required />
+            </div>
+            <div *ngIf="showErrorMessage" class="error active">
+                Invalid username or password
+            </div>
+            <div>
+                <button type="submit" class="btn btn-block btn-md btn-primary button" (click)="login()">
+                    Login
+                </button>
+                <button type="submit" class="btn btn-block btn-md btn-primary button" (click)="register()">
+                    Register
+                </button>
+            </div>
+            <div *ngIf="showServerErrorMessage" class="error active">
+                Server error, read in console
+            </div>
+        </form>
+    </div>
 </div>

@@ -1,66 +1,153 @@
-<div style="text-align:center">
-    <h2>Registration: </h2>
+<div class="container">
+    <clr-accordion>
+        <clr-accordion-panel>
+            <clr-accordion-title>Register As A Farmer</clr-accordion-title>
+            <clr-accordion-content *clrIfExpanded>
+                <div class="innerContainer">
 
-    <form (submit)="onSubmit()" name="form">
-        <tr>
-            <td>*First Name: </td>
-            <td><input type="text" name="first" required [(ngModel)]="user.first" #first="ngModel"></td>
-            <td style="color: red" *ngIf="!first.valid">First name is required</td>
-        </tr><br>
-        <tr>
-            <td>*Last Name: </td>
-            <td><input type="text" name="last" required [(ngModel)]="user.last" #last="ngModel"></td>
-            <td style="color: red" *ngIf="!last.valid">Last name is required</td>
-        </tr><br>
-        <tr>
-            <td>*Username: </td>
-            <td><input type="text" name="username" required [(ngModel)]="user.username" #username="ngModel"></td>
-            <td style="color: red" *ngIf="!username.valid">Must be unique</td>
-        </tr><br>
-        <tr>
+                    <div class="row">
+                        <form class="clr-form" [formGroup]="registrationForm">
+                            <div class="userInfo">
+                                <span class="userLabel">First Name</span>
+                                <input type="text" class="userInput" name="fName" placeholder="first name"
+                                    formControlName="fName" autofocus="autofocus" required />
+                            </div>
+                            <div class="userInfo">
+                                <span class="userLabel">Last Name</span>
+                                <input type="text" class="userInput" name="lName" placeholder="last name"
+                                    formControlName="lName" autofocus="autofocus" required />
+                            </div>
+                            <div class="userInfo">
+                                <span class="userLabel">Email Address</span>
+                                <input type="email" class="userInput" name="email" placeholder="email address"
+                                    formControlName="email" autofocus="autofocus" required />
+                            </div>
+                            <div class="userInfo">
+                                <span class="userLabel">Phone</span>
+                                <input type="text" class="userInput" name="phone" placeholder="phone"
+                                    formControlName="phone" autofocus="autofocus" required />
+                            </div>
+                            <div class="userInfo">
+                                <span class="userLabel">Birth date</span>
+                                <input type="date" class="userInput" name="date" placeholder="birth date"
+                                    formControlName="date" autofocus="autofocus" required />
+                            </div>
+                            <div class="userInfo">
+                                <span class="userLabel">Birth Palce</span>
+                                <input type="text" class="userInput" name="bPlace" placeholder="birth place"
+                                    formControlName="bPlace" autofocus="autofocus" required />
+                            </div>
+                            <div class="userInfo">
+                                <span class="userLabel">Username</span>
+                                <input type="text" class="userInput" name="username" placeholder="username"
+                                    formControlName="username" autofocus="autofocus" required />
+                            </div>
+                            <div class="userInfo">
+                                <span class="userLabel">Password</span>
+                                <input type="password" class="userInput" name="password" placeholder="password"
+                                    formControlName="password" required />
+                            </div>
+                            <div class="userInfo">
+                                <span class="userLabel">Confirm</span>
+                                <input type="password" class="userInput" name="cPassword" placeholder="password"
+                                    formControlName="cPassword" required />
+                            </div>
+                            <div *ngIf="showPasswordErrorMessage" class="error active">
+                                Passwords don't match!
+                            </div>
+                            <div *ngIf="showPasswordPatternErrorMessage" class="error active">
+                                Passwords must have minimum 7 characters, at least one capital letter, one
+                                number and one special character, and must begin with a letter!
+                            </div>
+                            <div>
+                                <button type="submit" class="btn btn-block btn-md btn-primary button"
+                                    (click)="registerFarmer()">
+                                    Register
+                                </button>
+                            </div>
+                            <div *ngIf="showServerErrorMessage" class="error active">
+                                Server error, read in console
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </clr-accordion-content>
+        </clr-accordion-panel>
 
-            <td>*Password: </td>
-            <td><input type="password" name="password" name="password" required minlength="8"
-                    pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$"
-                    [(ngModel)]="user.password" #password='ngModel'></td>
-            <td style="color: red" *ngIf="!password.valid">Password must be at least 8 characters, conatin lowercase
-                letters, at least one uppercase
-                letter, one special charcater and one number.</td>
-        </tr><br>
-        <tr>
-            <td>*Confirm PW: </td>
-            <td><input type="password" name="confirm" required minlength="8" maxlength="24" [(ngModel)]="user.confirm"
-                    pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" #confirm='ngModel'></td>
-            <td style="color: red" *ngIf="user.password!=user.confirm">Passwords must match</td>
-        </tr><br>
-        <tr>
-            <td>*JMBG: </td>
-            <td><input type="number" name="jmbg" required [(ngModel)]="user.jmbg" #jmbg='ngModel'></td>
-            <td style="color: red" *ngIf="!jmbg.valid">JMBG is required</td>
-        </tr><br>
-        <tr>
-            <td>*Phone number: </td>
-            <td><input type="text" name="phone" required [(ngModel)]="user.phone"
-                    pattern="^[2-9]\d{2}-\d{3}-\d{4}$" #phone='ngModel'></td>
-            <td style="color: red" *ngIf="!phone.valid">Check form ANN-NNN-NNNN</td>
-        </tr><br>
-        <tr>
-            <td>*Email: </td>
-            <td><input type="text" name="email" required minlength="4" [(ngModel)]="user.email" #email="ngModel"
-                    pattern="^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$"></td>
-            <td style="color: red" *ngIf="!email.valid">Please enter a proper email address</td>
-        </tr><br>
-        <tr>
-            <td>*Date of birth: </td>
-            <td><input type="date" name="date" required minlength="4" [(ngModel)]="user.date" #date="ngModel">
-            </td>
-            <td style="color: red" *ngIf="!date.valid">Please enter birth place</td>
-        </tr><br>
-        <tr>
-            <td>*Birth plase: </td>
-            <td><input type="text" name="birtPlace" required minlength="4" [(ngModel)]="user.birtPlace"
-                    #birtPlace="ngModel"></td>
-            <td style="color: red" *ngIf="!birtPlace.valid">Please enter birth place</td>
-        </tr><br>
-        <input type="submit" value="submit">
-    </form>
+        <clr-accordion-panel>
+            <clr-accordion-title>Register As A Company</clr-accordion-title>
+            <clr-accordion-content *clrIfExpanded>
+                <div class="innerContainer">
+
+                    <div class="row">
+                        <form class="clr-form" [formGroup]="registrationCompanyForm">
+                            <div class="userInfo">
+                                <span class="companyLabel">Company Name</span>
+                                <input type="text" class="userInput" name="cName" placeholder="company name"
+                                    formControlName="cName" autofocus="autofocus" required />
+                            </div>
+                            <div class="userInfo">
+                                <span class="companyLabel">Email Address</span>
+                                <input type="email" class="userInput" name="email" placeholder="email address"
+                                    formControlName="email" autofocus="autofocus" required />
+                            </div>
+                            <div class="userInfo">
+                                <span class="companyLabel" style="padding-top: 3px;">Establishment Date</span>
+                                <input type="date" class="userInput" name="date" placeholder="establishment date"
+                                    formControlName="date" autofocus="autofocus" required />
+                            </div>
+                            <div class="userInfo">
+                                <span class="companyLabel">Enterprise Palce</span>
+                                <input type="text" class="userInput" name="ePlace" placeholder="enterprise place"
+                                    formControlName="ePlace" autofocus="autofocus" required />
+                            </div>
+                            <div class="userInfo">
+                                <span class="companyLabel">Shortened Name</span>
+                                <input type="text" class="userInput" name="username" placeholder="username"
+                                    formControlName="username" autofocus="autofocus" required />
+                            </div>
+                            <div class="userInfo">
+                                <span class="companyLabel">Password</span>
+                                <input type="password" class="userInput" name="password" placeholder="password"
+                                    formControlName="password" required />
+                            </div>
+                            <div class="userInfo">
+                                <span class="companyLabel">Confirm</span>
+                                <input type="password" class="userInput" name="cPassword" placeholder="password"
+                                    formControlName="cPassword" required />
+                            </div>
+                            <div *ngIf="showPasswordErrorMessage" class="error active">
+                                Passwords don't match!
+                            </div>
+                            <div *ngIf="showPasswordPatternErrorMessage" class="error active">
+                                Passwords must have minimum 7 characters, at least one capital letter, one
+                                number and one special character, and must begin with a letter!
+                            </div>
+                            <div>
+                                <button type="submit" class="btn btn-block btn-md btn-primary button"
+                                    (click)="registerCompany()">
+                                    Register
+                                </button>
+                            </div>
+                            <div *ngIf="showServerErrorMessage" class="error active">
+                                Server error, read in console
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </clr-accordion-content>
+        </clr-accordion-panel>
+    </clr-accordion>
+
+</div>
+
+<clr-modal [(clrModalOpen)]="modal">
+    <h3 class="modal-title">Registration</h3>
+    <div class="modal-body">
+        <p>You successfully send registration request!</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="ok()">Ok</button>
+    </div>
+</clr-modal>
+<div class="modal-backdrop" aria-hidden="true"></div>
