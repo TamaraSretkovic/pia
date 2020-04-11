@@ -11,7 +11,7 @@ const routes: Routes = [
     path: '', component: LoginComponent
   },
   {
-    path: 'admin', component: AdminComponent,  canActivate: [LoginGuard]
+    path: 'admin', component: AdminComponent //,  canActivate: [LoginGuard]
   },
   {
     path: 'registration', component: RegistrationComponent

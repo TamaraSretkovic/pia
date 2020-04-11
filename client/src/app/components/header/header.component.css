@@ -1,0 +1,66 @@
+.welcome {
+    margin-top: 7px;
+    color: white;
+}
+
+.cogBtn {
+    margin-left: calc(100% - 240px);
+    margin-top: 12px;
+    padding: 5px;
+}
+
+.logoutBtn {
+    margin-left: 5px;
+    margin-top: 12px;
+    padding: 5px;
+}
+
+clr-icon {
+    margin-bottom: 10px;
+}
+
+.companyLabel {
+    display: block;
+    float: left;
+    width: 130px;
+    height: 34px;
+    padding: 0px;
+    padding-top: 9px;
+    margin: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+    color: #555;
+    text-align: center;
+    background-color: #eee;
+    border: 1px solid #ccc;
+}
+.userInput {
+    position: relative;
+    z-index: 2;
+    float: right;
+    display: block;
+    width: 258px;
+    height: 34px;
+    padding: 6px 12px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+}
+
+.button {
+    border-radius: 0;
+} 
+
+.error {
+    color: red;
+}
+
+.container {
+    width: 400px;
+    margin: auto;
+    background-color: white;
+}

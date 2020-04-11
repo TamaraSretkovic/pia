@@ -1,5 +1,5 @@
 <div class="container">
-    <clr-accordion>
+    <clr-accordion style="margin: 0;">
         <clr-accordion-panel>
             <clr-accordion-title>Register As A Farmer</clr-accordion-title>
             <clr-accordion-content *clrIfExpanded>
@@ -138,7 +138,9 @@
             </clr-accordion-content>
         </clr-accordion-panel>
     </clr-accordion>
-
+    <button type="button" style="margin: 0;" class="btn btn-block btn-md btn-primary button" (click)="login()">
+        Login
+    </button>
 </div>
 
 <clr-modal [(clrModalOpen)]="modal">
@@ -150,4 +152,3 @@
         <button type="button" class="btn btn-primary" (click)="ok()">Ok</button>
     </div>
 </clr-modal>
-<div class="modal-backdrop" aria-hidden="true"></div>

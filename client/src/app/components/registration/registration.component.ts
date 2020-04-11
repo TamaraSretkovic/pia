@@ -122,6 +122,10 @@ export class RegistrationComponent implements OnInit {
 
   ok() {
     this.modal = false;
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
+  }
+
+  login() {
+    this.router.navigate(['/']);
   }
 }
