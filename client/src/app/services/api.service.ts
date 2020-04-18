@@ -9,7 +9,7 @@ import { CookieService } from 'angular2-cookie/core';
 })
 export class ApiService {
 
-    baseUrl = 'http://localhost:5000';
+    baseUrl = '';
     loginUrl = '/v0.1/credential';
     registerFarmerUrl = '/v0.1/register_farmer';
     registerCompanyUrl = '/v0.1/register_company';
@@ -20,12 +20,14 @@ export class ApiService {
     companyUsersUrl = '/v0.1/company_users';
 
     constructor(private router: Router, private http: HttpClient,
-        private cookieService: CookieService) { }
+        private cookieService: CookieService) {
+            this.setBaseUrl(`${window.location.protocol}//${window.location.hostname}:3000`);
+        }
 
     // ***** init *****
 
     setBaseUrl(url: string): void {
-        // this.baseUrl = url;
+        this.baseUrl = url;
     }
 
     // ***** user stuff *****
