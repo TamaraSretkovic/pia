@@ -55,7 +55,7 @@ export class RegistrationComponent implements OnInit {
       this.showPasswordErrorMessage = true;
       return;
     }
-    const pattern = "(?=^.{7,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$";
+    const pattern = '(?=^.{7,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$';
     if (this.registrationForm.value.password.match(pattern)===null) {
       this.showPasswordPatternErrorMessage = true;
       return;
