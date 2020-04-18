@@ -18,11 +18,7 @@ export class LoginComponent {
   showErrorMessage = false;
   showServerErrorMessage = false;
 
-  constructor(private router: Router, private service: ApiService) {
-    // this.service.setBaseUrl(`${window.location.protocol}//${window.location.hostname}:${window.location.port}`);
-    this.service.setBaseUrl(`${window.location.protocol}//${window.location.hostname}:${window.location.port}`);
-
-  }
+  constructor(private router: Router, private service: ApiService) {}
 
   login(): void {
     if (this.loginForm.invalid) {
@@ -33,8 +29,8 @@ export class LoginComponent {
     const password = this.loginForm.value.password;
 
     this.service.login(this.loginForm.value).subscribe(data => {
-      this.service.setCredentials(username, password);
-      // this.service.nextPage();
+      this.service.setCredentials(username, data.userType, data.token);
+      this.service.nextPage();
       this.showErrorMessage = false;
     },
       err => {

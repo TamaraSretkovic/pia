@@ -10,7 +10,7 @@ import { CookieService } from 'angular2-cookie/core';
 export class ApiService {
 
     baseUrl = '';
-    loginUrl = '/v0.1/credential';
+    loginUrl = '/v0.1/login';
     registerFarmerUrl = '/v0.1/register_farmer';
     registerCompanyUrl = '/v0.1/register_company';
     changePasswordUrl = '/v0.1/change_password';
@@ -32,16 +32,17 @@ export class ApiService {
 
     // ***** user stuff *****
 
-    setCredentials(username, password): void {
+    setCredentials(username, userType, token): void {
         this.cookieService.put('username', username);
-        const encoded = btoa(`${username}:${password}`);
-        this.cookieService.put('authdata', encoded);
+        this.cookieService.put('token', token);
+        this.cookieService.put('userType', userType);
     }
 
     clearCredentials(): void {
         document.execCommand('ClearAuthenticationCache');
-        this.cookieService.remove('authdata');
+        this.cookieService.remove('token');
         this.cookieService.remove('username');
+        this.cookieService.remove('userType');
     }
 
     getUsername(): string {
@@ -50,11 +51,15 @@ export class ApiService {
     // ***** login stuff ******
 
     isLoggedIn(): boolean {
-        return this.getAuthData() !== undefined;
+        return this.getToken() !== undefined;
     }
 
-    getAuthData(): string {
-        return this.cookieService.get('authdata');
+    getToken(): string {
+        return this.cookieService.get('token');
+    }
+
+    getUserType(): string {
+        return this.cookieService.get('userType');
     }
 
     logOutUser(): void {
@@ -63,8 +68,10 @@ export class ApiService {
         this.router.navigate(['/']);
     }
 
-    nextPage(userType: string):void {
-        //to do
+    nextPage():void {
+        if(this.getUserType() == 'admin') {
+            this.router.navigate(['/admin']);
+        }
     }
 
     login(user: any): Observable<any> {

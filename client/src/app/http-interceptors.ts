@@ -12,10 +12,10 @@ export class AuthenticationInterceptor implements HttpInterceptor {
     public intercept(req: HttpRequest<any>, next: HttpHandler):
         Observable<HttpEvent<any>> {
         if (this.service.isLoggedIn()) {
-            const authData = this.service.getAuthData();
+            const token = this.service.getToken();
             req = req.clone({
                 setHeaders: {
-                    Authorization: `Basic ${authData}`,
+                    Authorization: `Bearer ${token}`,
                 },
             });
         }
