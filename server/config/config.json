@@ -1,0 +1,8 @@
+{
+    "development": {
+        "PORT": 3000,
+        "MONGODB_URI": "mongodb+srv://st160449:st160449@cluster1-vutk5.mongodb.net/nursery-garden?retryWrites=true&w=majority",
+        "JWT_SECRET": "SECRET#123",
+        "JWT_EXP": "5m"
+    }
+}
