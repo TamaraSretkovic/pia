@@ -11,13 +11,10 @@ export class ApiService {
 
     baseUrl = '';
     loginUrl = '/v0.1/login';
-    registerFarmerUrl = '/v0.1/register_farmer';
-    registerCompanyUrl = '/v0.1/register_company';
+    registerUserUrl = '/v0.1/register_user';
     changePasswordUrl = '/v0.1/change_password';
-    companyRequestsUrl = '/v0.1/company_requests';
-    farmerRequestsUrl = '/v0.1/farmer_requests';
-    farmerUsersUrl = '/v0.1/farmer_users';
-    companyUsersUrl = '/v0.1/company_users';
+    registrationRequestsUrl = '/v0.1/registration_request';
+    usersUrl = '/v0.1/users';
 
     constructor(private router: Router, private http: HttpClient,
         private cookieService: CookieService) {
@@ -71,6 +68,10 @@ export class ApiService {
     nextPage():void {
         if(this.getUserType() == 'admin') {
             this.router.navigate(['/admin']);
+        } else if (this.getUserType() == 'farmer') {
+            this.router.navigate(['/farmer']);
+        } else if(this.getUserType() == 'company') {
+            this.router.navigate(['/company']);
         }
     }
 
@@ -80,69 +81,50 @@ export class ApiService {
 
     // **** registration stuff ****
 
-    registerFarmer(userInfo: any): Observable<any> {
-        return this.http.post<any>(`${this.baseUrl}${this.registerFarmerUrl}`, userInfo);
+    registrationRequest(userInfo: any): Observable<any> {
+        return this.http.post<any>(`${this.baseUrl}${this.registrationRequestsUrl}`, userInfo);
     }
 
-    registerCompany(userInfo: any): Observable<any> {
-        return this.http.post<any>(`${this.baseUrl}${this.registerCompanyUrl}`, userInfo);
-    }
-
-    changePassword(password: any): Observable<any> {
+    changePassword(oldPassword: any, password: any): Observable<any> {
         const changeP = {
             username: this.getUsername(),
-            password: password
+            password: password,
+            oldPassword: oldPassword
         }
         return this.http.post<any>(`${this.baseUrl}${this.changePasswordUrl}`, changeP);
     }
 
     // **** admin stuff ****
 
-    //get everything
+    // registration requests
 
-    getCompanyRequests(): Observable<any> {
-        return this.http.get<any>(`${this.baseUrl}${this.companyRequestsUrl}`);
+    getRegistrationRequests(): Observable<any> {
+        return this.http.get<any>(`${this.baseUrl}${this.registrationRequestsUrl}`);
     }
 
-    getFarmerRequests(): Observable<any> {
-        return this.http.get<any>(`${this.baseUrl}${this.farmerRequestsUrl}`);
+    deleteUserRegistrationRequest(id: number): Observable<any> {
+        return this.http.delete<any>(`${this.baseUrl}${this.registrationRequestsUrl}/${id}`);
     }
 
-    getCompanyUsers(): Observable<any> {
-        return this.http.get<any>(`${this.baseUrl}${this.companyUsersUrl}`);
+    registerRequest(userInfo: any): Observable<any> {
+        return this.http.post<any>(`${this.baseUrl}${this.registrationRequestsUrl}`, userInfo);
     }
 
-    getFarmerUsers(): Observable<any> {
-        return this.http.get<any>(`${this.baseUrl}${this.farmerUsersUrl}`);
+    registerUser(userInfo: any): Observable<any> {
+        return this.http.post<any>(`${this.baseUrl}${this.registerUserUrl}`, userInfo);
     }
 
-    // accept/reject requests
+    // users
 
-    acceptCompanyRequests(accept: boolean, id: number): Observable<any> {
-        return this.http.post<any>(`${this.baseUrl}${this.companyRequestsUrl}`, {accept: accept, id: id});
+    getUsers(): Observable<any> {
+        return this.http.get<any>(`${this.baseUrl}${this.usersUrl}`);
+    }
+    
+    deleteUser(username: string): Observable<any> {
+        return this.http.delete<any>(`${this.baseUrl}${this.usersUrl}/${username}`);
     }
 
-    acceptFarmerRequests(accept: boolean, id: number): Observable<any> {
-        return this.http.post<any>(`${this.baseUrl}${this.farmerRequestsUrl}`, {accept: accept, id: id});
-    }
-
-    // delete user
-
-    deleteCompanyUser(id: number): Observable<any> {
-        return this.http.delete<any>(`${this.baseUrl}${this.companyUsersUrl}/${id}`);
-    }
-
-    deleteFarmerUser(id: number): Observable<any> {
-        return this.http.delete<any>(`${this.baseUrl}${this.farmerUsersUrl}/${id}`);
-    }
-
-    // update user
-
-    updateCompanyUser(user: any): Observable<any> {
-        return this.http.post<any>(`${this.baseUrl}${this.companyUsersUrl}`, user);
-    }
-
-    updateFarmerUser(user: any): Observable<any> {
-        return this.http.post<any>(`${this.baseUrl}${this.farmerUsersUrl}`, user);
+    updateUser(user: any): Observable<any> {
+        return this.http.post<any>(`${this.baseUrl}${this.usersUrl}`, user);
     }
 }

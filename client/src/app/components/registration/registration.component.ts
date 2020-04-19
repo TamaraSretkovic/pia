@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ApiService } from 'src/app/services/api.service';
 import { Router } from '@angular/router';
@@ -9,6 +9,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./registration.component.css']
 })
 export class RegistrationComponent implements OnInit {
+
+  @Input() admin: boolean;
 
   registrationForm: FormGroup = new FormGroup({
     fName: new FormControl('', Validators.required),
@@ -37,6 +39,7 @@ export class RegistrationComponent implements OnInit {
   showErrorMessage: boolean;
   showPasswordPatternErrorMessage: boolean;
   modal: boolean;
+  modalContent: string;
 
   data: any;
 
@@ -47,6 +50,11 @@ export class RegistrationComponent implements OnInit {
   }
 
   registerFarmer(): void {
+    this.showPasswordErrorMessage = false;
+    this.showErrorMessage = false;
+    this.showServerErrorMessage = false;
+    this.showPasswordPatternErrorMessage = false;
+
     if (this.registrationForm.invalid) {
       this.showErrorMessage = true;
       return;
@@ -55,8 +63,10 @@ export class RegistrationComponent implements OnInit {
       this.showPasswordErrorMessage = true;
       return;
     }
-    const pattern = '(?=^.{7,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$';
-    if (this.registrationForm.value.password.match(pattern)===null) {
+
+    const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[a-zA-z].[A-Za-z\d@$!%*?&]{6,}$/;
+
+    if (this.registrationForm.value.password.match(pattern) === null) {
       this.showPasswordPatternErrorMessage = true;
       return;
     }
@@ -65,26 +75,48 @@ export class RegistrationComponent implements OnInit {
     this.showServerErrorMessage = false;
     this.showPasswordPatternErrorMessage = false;
 
-
-    this.service.registerFarmer({
-      first_name: this.registrationForm.value.fName,
-      last_name: this.registrationForm.value.lName,
+    const farmer = {
+      fullName: `${this.registrationForm.value.fName} ${this.registrationForm.value.lName}`,
       email: this.registrationForm.value.email,
       phone: this.registrationForm.value.phone,
-      b_place: this.registrationForm.value.bPlace,
+      place: this.registrationForm.value.bPlace,
       date: this.registrationForm.value.date,
       username: this.registrationForm.value.username,
-      password: this.registrationForm.value.password
-    }).subscribe(data => {
+      password: this.registrationForm.value.password,
+      userType: 'farmer'
+    };
+
+    if(this.admin){
+      this.service.registerUser(farmer).subscribe(data => {
+        this.modal = true;
+        this.modalContent = data.message;
+      },
+        err => {
+          this.showServerErrorMessage = true;
+          this.modal = true;
+          this.modalContent = err.message;
+        });
+      this.registrationForm.reset();
+    } else {
+    this.service.registerRequest(farmer).subscribe(data => {
       this.modal = true;
+      this.modalContent = data.message;
     },
       err => {
         this.showServerErrorMessage = true;
+        this.modal = true;
+        this.modalContent = err.message;
       });
     this.registrationForm.reset();
   }
+}
 
   registerCompany() {
+    this.showPasswordErrorMessage = false;
+    this.showErrorMessage = false;
+    this.showServerErrorMessage = false;
+    this.showPasswordPatternErrorMessage = false;
+
     if (this.registrationCompanyForm.invalid) {
       this.showErrorMessage = true;
       return;
@@ -93,8 +125,10 @@ export class RegistrationComponent implements OnInit {
       this.showPasswordErrorMessage = true;
       return;
     }
-    const pattern = "(?=^.{7,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$";
-    if (this.registrationCompanyForm.value.password.match(pattern)===null) {
+
+    const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[a-zA-z].[A-Za-z\d@$!%*?&]{6,}$/;
+
+    if (this.registrationCompanyForm.value.password.match(pattern) === null) {
       this.showPasswordPatternErrorMessage = true;
       return;
     }
@@ -103,26 +137,45 @@ export class RegistrationComponent implements OnInit {
     this.showServerErrorMessage = false;
     this.showPasswordPatternErrorMessage = false;
 
-
-    this.service.registerCompany({
-      company_name: this.registrationCompanyForm.value.cName,
+    const company = {
+      fullName: this.registrationCompanyForm.value.cName,
       email: this.registrationCompanyForm.value.email,
-      e_place: this.registrationCompanyForm.value.ePlace,
+      place: this.registrationCompanyForm.value.ePlace,
       date: this.registrationCompanyForm.value.date,
       username: this.registrationCompanyForm.value.username,
-      password: this.registrationCompanyForm.value.password
-    }).subscribe(data => {
+      password: this.registrationCompanyForm.value.password,
+      userType: 'company'
+    };
+
+    if(this.admin) {
+      this.service.registerUser(company).subscribe(data => {
+        this.modal = true;
+        this.modalContent = data.message;
+      },
+        err => {
+          this.showServerErrorMessage = true;
+          this.modal = true;
+          this.modalContent = err.message;
+        });
+      this.registrationForm.reset();
+    } else {
+    this.service.registerRequest(company).subscribe(data => {
       this.modal = true;
+      this.modalContent = data.message;
     },
       err => {
         this.showServerErrorMessage = true;
+        this.modal = true;
+        this.modalContent = err.message;
       });
-    this.registrationForm.reset();
-  }
+    this.registrationCompanyForm.reset();
+  }}
 
   ok() {
     this.modal = false;
-    this.router.navigate(['/']);
+    if(!this.admin){
+      this.router.navigate(['/']);
+    }
   }
 
   login() {

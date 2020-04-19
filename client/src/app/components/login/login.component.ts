@@ -26,7 +26,6 @@ export class LoginComponent {
       return;
     }
     const username = this.loginForm.value.username;
-    const password = this.loginForm.value.password;
 
     this.service.login(this.loginForm.value).subscribe(data => {
       this.service.setCredentials(username, data.userType, data.token);

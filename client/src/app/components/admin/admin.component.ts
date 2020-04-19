@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
-import { FarmerRequest, CompanyRequest } from '../../model/registration-request';
+import { FarmerRequest, CompanyRequest, makeUserFromCompanyRequest, makeUserFromFarmerRequest, User } from '../../model/registration-request';
 
 @Component({
   selector: 'app-admin',
@@ -17,6 +17,14 @@ export class AdminComponent implements OnInit {
 
   fReuest: FarmerRequest;
   cReuest: CompanyRequest;
+  editedUser: any;
+  oldUser: any;
+  deletingUser: any;
+
+  modalTitle: string;
+  modalContent: string;
+  modal: boolean;
+  deleteModal: boolean;
 
   constructor(private service: ApiService) {
     this.fRequests = new Array<FarmerRequest>();
@@ -26,98 +34,198 @@ export class AdminComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initLists();
+    this.getRegistrationRequests();
+    this.getUsers();
   }
 
-  initLists() {
-    // this.service.getCompanyRequests().subscribe(data => {
-    //   this.fRequests = [];
-    //   data.forEach(r => {
-    //     this.fRequests.push(r);
-    //   });
-    // }, err => console.log(err));
-
-    // this.service.getFarmerRequests().subscribe(data => {
-    //   this.cRequests = [];
-    //   data.forEach(r => {
-    //     this.cRequests.push(r);
-    //   });
-    // }, err => console.log(err));
-
-    // this.service.getCompanyUsers().subscribe(data => {
-    //     this.fUsers = [];
-    //     data.forEach(u => {
-    //       this.fUsers.push(u);
-    //     });
-    //   }, err => console.log(err));
-
-    // this.service.getFarmerUsers().subscribe(data => {
-    //   this.cUsers = [];
-    //   data.forEach(u => {
-    //     this.cUsers.push(u);
-    //   });
-    // }, err => console.log(err));
-
-    this.fRequests.push({
-      firstName: 'Ime',
-      lastName: 'Prezime',
-      username: 'username',
-      email: 'imejt@nesto',
-      phone: '2222222222',
-      bPlace: 'Lazarevac',
-      date: '15/6/1977',
-      id: 1
-    });
-
-    this.fRequests.push({
-      firstName: 'Ime2',
-      lastName: 'Prezime2',
-      username: 'username2',
-      email: 'imejt@nesto',
-      phone: '2222222222',
-      bPlace: 'Lazarevac',
-      date: '15/6/1977',
-      id: 2
-    });
-
-    this.cRequests.push({
-      companyName: 'Prezime',
-      username: 'username',
-      email: 'imejt@nesto',
-      ePlace: 'Lazarevac',
-      date: '15/6/1977',
-      id: 3
-    });
-
-    this.cRequests.push({
-      companyName: 'Prezime2',
-      username: 'username2',
-      email: 'imejt@nesto',
-      ePlace: 'Lazarevac',
-      date: '15/6/1977',
-      id: 4
+  getUsers() {
+    this.fRequests = [];
+    this.cRequests = [];
+    this.service.getUsers().subscribe(data => {
+      data.forEach(request => {
+        if (request.userType === 'farmer') {
+          this.fUsers.push({
+            firstName: request.fullName.split(' ')[0],
+            lastName: request.fullName.split(' ')[1],
+            username: request.username,
+            password: request.password,
+            email: request.email,
+            phone: request.phone,
+            bPlace: request.place,
+            date: request.date,
+            id: request._id
+          });
+        } else if (request.userType === 'company') {
+          this.cUsers.push({
+            companyName: request.fullName,
+            username: request.username,
+            password: request.password,
+            email: request.email,
+            ePlace: request.place,
+            date: request.date,
+            id: request._id
+          });
+        }
+      });
     });
   }
 
-  acceptFarmer(request: FarmerRequest, accept: boolean) {
-    this.service.acceptFarmerRequests(accept, request.id).subscribe(data => {
-      if(accept === true) {
-        this.fUsers.push(data.user);
-      }
-      const index = this.fRequests.findIndex(r => r.id === request.id); // find index in your array
-      this.fRequests.splice(index, 1); // remove element from array
-    }, err => console.log(err)
-    );
+  getRegistrationRequests() {
+    this.service.getRegistrationRequests().subscribe(data => {
+      data.forEach(request => {
+        if (request.userType === 'farmer') {
+          this.fRequests.push({
+            firstName: request.fullName.split(' ')[0],
+            lastName: request.fullName.split(' ')[1],
+            username: request.username,
+            password: request.password,
+            email: request.email,
+            phone: request.phone,
+            bPlace: request.place,
+            date: request.date,
+            id: request._id
+          });
+        } else {
+          this.cRequests.push({
+            companyName: request.fullName,
+            username: request.username,
+            password: request.password,
+            email: request.email,
+            ePlace: request.place,
+            date: request.date,
+            id: request._id
+          });
+        }
+      });
+    });
   }
 
-  acceptCompany(request: CompanyRequest, accept: boolean) {
-    this.service.acceptCompanyRequests(accept, request.id).subscribe(data => {
-      if(accept === true) {
-        this.cUsers.push(data.user);
-      }
-      const index = this.cRequests.findIndex(r => r.id === request.id); // find index in your array
-      this.cRequests.splice(index, 1); // remove element from array
-    }, err => console.log(err)
-    );
+  acceptFarmerRequest(request: any) {
+    const user = makeUserFromFarmerRequest(request);
+    this.service.registerUser(user).subscribe(res => {
+      this.modalTitle = 'Register User';
+      this.modalContent = res.message;
+      this.modal = true;
+      let index = 0;
+      this.fRequests.forEach(element => {
+        if (element.id === request.id) {
+          this.fRequests.splice(index, 1);
+          return;
+        }
+        index++;
+      });
+    });
+  }
+
+  acceptCompanyRequest(request: any) {
+    const user = makeUserFromCompanyRequest(request);
+    this.service.registerUser(user).subscribe(res => {
+      this.modalTitle = 'Register User';
+      this.modalContent = res.message;
+      this.modal = true;
+      let index = 0;
+      this.cRequests.forEach(element => {
+        if (element.id === request.id) {
+          this.cRequests.splice(index, 1);
+          return;
+        }
+        index++;
+      });
+    });
+  }
+
+  deleteRegistrationRequest(request: any) {
+    this.service.deleteUserRegistrationRequest(request.id).subscribe(res => {
+      this.modalTitle = 'Register User';
+      this.modalContent = res.message;
+      this.modal = true;
+      let index = 0;
+      this.fRequests.forEach(element => {
+        if (element.id === request.id) {
+          this.fRequests.splice(index, 1);
+        }
+        index++;
+      });
+      index = 0;
+      this.cRequests.forEach(element => {
+        if (element.id === request.id) {
+          this.cRequests.splice(index, 1);
+        }
+        index++;
+      });
+    });
+  }
+
+  editUser(user: any) {
+    this.editedUser = user;
+    this.oldUser = Object.assign({}, user);
+  }
+
+  reject(user) {
+    console.log('reject');
+    user = this.oldUser;
+    this.editedUser = null;
+    this.oldUser = null;
+  }
+
+  apdateUser(user: any, userType: string) {
+    let edited = new User();
+    if (userType === 'farmer') {
+      edited = makeUserFromFarmerRequest(user);
+    } else {
+      edited = makeUserFromCompanyRequest(user);
+    }
+    this.service.updateUser(edited).subscribe(res => {
+      this.modalTitle = 'Edit User';
+      this.modalContent = res.message;
+      this.modal = true;
+
+      this.editedUser = null;
+      this.oldUser = null;
+    }, err => {
+      this.modalTitle = 'Edit User';
+      this.modalContent = err.message;
+      this.modal = true;
+      this.reject(user);
+    });
+  }
+
+  deleteUser(user: any){
+    this.deletingUser = user;
+    this.modalTitle = 'Delete User';
+    this.modalContent = 'Are you sure you want to delete ' + user.username + '?';
+    this.deleteModal = true;
+  }
+  
+  delete(){
+    this.deleteModal = false;
+    this.service.deleteUser(this.deletingUser.id).subscribe(res => {
+      this.modalTitle = 'Delete User';
+      this.modalContent = res.message;
+      this.modal = true;
+      let index = 0;
+      this.fUsers.forEach(element => {
+        if (element.id === this.deletingUser.id) {
+          this.fUsers.splice(index, 1);
+        }
+        index++;
+      });
+      index = 0;
+      this.cUsers.forEach(element => {
+        if (element.id === this.deletingUser.id) {
+          this.cUsers.splice(index, 1);
+        }
+        index++;
+      });
+    }, err => {
+      this.modalTitle = 'Delete User';
+      this.modalContent = err.message;
+      this.modal = true;
+    });
+  }
+
+  cancel() {
+    this.deleteModal = false;
+    this.deletingUser = null;
   }
 }

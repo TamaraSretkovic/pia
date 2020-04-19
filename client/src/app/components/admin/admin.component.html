@@ -7,7 +7,8 @@
             <div class="container">
                 <div class="farmerR">
                     <h3 class="title">Farmer Requests</h3>
-                    <div class="requestList"  *ngFor="let request of fRequests">
+                    <h4 class="title" *ngIf="fRequests.length === 0">No farmer requests!</h4>
+                    <div class="requestList" *ngFor="let request of fRequests">
                         <div class="userInfo">
                             <span class="userLabel">First Name</span>
                             <span class="userInput"> {{ request.firstName }} </span>
@@ -15,6 +16,10 @@
                         <div class="userInfo">
                             <span class="userLabel">Last Name</span>
                             <span class="userInput"> {{ request.lastName }} </span>
+                        </div>
+                        <div class="userInfo">
+                            <span class="companyLabel">Username</span>
+                            <span class="userInput"> {{ request.username }} </span>
                         </div>
                         <div class="userInfo">
                             <span class="userLabel">Email</span>
@@ -34,18 +39,25 @@
                         </div>
                         <div class="userInfo">
                             <div class="btn-group btn-primary groupBtn">
-                                <button class="btn btn-success button"  (click)="acceptFarmer(request,true)">Accept</button>
-                                <button class="btn btn-danger button"  (click)="acceptFarmer(request,false)">Reject</button>
+                                <button class="btn btn-success button"
+                                    (click)="acceptFarmerRequest(request)">Accept</button>
+                                <button class="btn btn-danger button"
+                                    (click)="deleteRegistrationRequest(request)">Reject</button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="companyR">
                     <h3 class="title">Company Requests</h3>
-                    <div class="requestList"  *ngFor="let request of cRequests">
+                    <h4 class="title" *ngIf="fRequests.length === 0">No company requests!</h4>
+                    <div class="requestList" *ngFor="let request of cRequests">
                         <div class="userInfo">
                             <span class="companyLabel">Company Name</span>
                             <span class="userInput"> {{ request.companyName }} </span>
+                        </div>
+                        <div class="userInfo">
+                            <span class="companyLabel">Username</span>
+                            <span class="userInput"> {{ request.username }} </span>
                         </div>
                         <div class="userInfo">
                             <span class="companyLabel">Email</span>
@@ -61,8 +73,10 @@
                         </div>
                         <div class="userInfo">
                             <div class="btn-group btn-primary groupBtn">
-                                <button class="btn btn-success button" (click)="acceptCompany(request,true)">Accept</button>
-                                <button class="btn btn-danger button" (click)="acceptCompany(request,false)">Reject</button>
+                                <button class="btn btn-success button"
+                                    (click)="acceptCompanyRequest(request)">Accept</button>
+                                <button class="btn btn-danger button"
+                                    (click)="deleteRegistrationRequest(request)">Reject</button>
                             </div>
                         </div>
                     </div>
@@ -74,8 +88,139 @@
         <button clrTabLink>Manage Users</button>
         <clr-tab-content *clrIfActive>
             <div class="container">
-
+                <div class="farmerR">
+                    <h3 class="title">Farmer Users</h3>
+                    <h4 class="title" *ngIf="fUsers.length === 0">No farmer users!</h4>
+                    <div class="requestList" *ngFor="let user of fUsers">
+                        <div class="userInfo">
+                            <span class="userLabel">First Name</span>
+                            <span *ngIf="user !== editedUser" [textContent]="user.firstName" class="userInput"> </span>
+                            <input type="text" *ngIf="user === editedUser" [(ngModel)]="user.firstName"
+                                class="userInput" />
+                        </div>
+                        <div class="userInfo">
+                            <span class="userLabel">Last Name</span>
+                            <span *ngIf="user !== editedUser" [textContent]="user.lastName" class="userInput"> </span>
+                            <input type="text" *ngIf="user === editedUser" [(ngModel)]="user.lastName"
+                                class="userInput" />
+                        </div>
+                        <div class="userInfo">
+                            <span class="userLabel">Username</span>
+                            <span class="userInput"> {{ user.username }} </span>
+                        </div>
+                        <div class="userInfo">
+                            <span class="userLabel">Email</span>
+                            <span *ngIf="user !== editedUser" [textContent]="user.email" class="userInput"></span>
+                            <input type="email" *ngIf="user === editedUser" [(ngModel)]="user.email"
+                                class="userInput" />
+                        </div>
+                        <div class="userInfo">
+                            <span class="userLabel">Phone</span>
+                            <span *ngIf="user !== editedUser" [textContent]="user.phone" class="userInput"> </span>
+                            <input type="tel" *ngIf="user === editedUser" [(ngModel)]="user.phone" class="userInput" />
+                        </div>
+                        <div class="userInfo">
+                            <span class="userLabel">Birth Place</span>
+                            <span *ngIf="user !== editedUser" [textContent]="user.bPlace" class="userInput"> </span>
+                            <input type="text" *ngIf="user === editedUser" [(ngModel)]="user.bPlace"
+                                class="userInput" />
+                        </div>
+                        <div class="userInfo">
+                            <span class="userLabel">Birth Date</span>
+                            <span *ngIf="user !== editedUser" [textContent]="user.date" class="userInput"> </span>
+                            <input type="date" *ngIf="user === editedUser" [(ngModel)]="user.date" class="userInput" />
+                        </div>
+                        <div class="userInfo">
+                            <div *ngIf="user === editedUser" class="btn-group btn-primary groupBtn">
+                                <button class="btn btn-success button"
+                                    (click)="apdateUser(user, 'farmer')">Apdate</button>
+                                <button class="btn btn-danger button" (click)="reject(user)">Reject</button>
+                            </div>
+                            <div *ngIf="user !== editedUser" class="btn-group btn-primary groupBtn">
+                                <button type="button" class="btn btn-block btn-md btn-primary button"
+                                    (click)="editUser(user)"> Edit </button>
+                                <button type="button" class="btn btn-block btn-md btn-danger button"
+                                    (click)="deleteUser(user)"> Delete User </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="companyR">
+                    <h3 class="title">Company Users</h3>
+                    <h4 class="title" *ngIf="cUsers.length === 0">No company users!</h4>
+                    <div class="requestList" *ngFor="let user of cUsers">
+                        <div class="userInfo">
+                            <span class="companyLabel">Company Name</span>
+                            <span *ngIf="user !== editedUser" [textContent]="user.companyName" class="userInput">
+                            </span>
+                            <input type="text" *ngIf="user === editedUser" [(ngModel)]="user.companyName"
+                                class="userInput" />
+                        </div>
+                        <div class="userInfo">
+                            <span class="companyLabel">Username</span>
+                            <span class="userInput"> {{ user.username }} </span>
+                        </div>
+                        <div class="userInfo">
+                            <span class="companyLabel">Email</span>
+                            <span *ngIf="user !== editedUser" [textContent]="user.email" class="userInput"> </span>
+                            <input type="text" *ngIf="user === editedUser" [(ngModel)]="user.email" class="userInput" />
+                        </div>
+                        <div class="userInfo">
+                            <span class="companyLabel">Enterprise Palce</span>
+                            <span *ngIf="user !== editedUser" [textContent]="user.ePlace" class="userInput"> </span>
+                            <input type="text" *ngIf="user === editedUser" [(ngModel)]="user.ePlace"
+                                class="userInput" />
+                        </div>
+                        <div class="userInfo">
+                            <span class="companyLabel" style="padding-top: 3px;">Establishment Date</span>
+                            <span *ngIf="user !== editedUser" [textContent]="user.date" class="userInput"> </span>
+                            <input type="date" *ngIf="user === editedUser" [(ngModel)]="user.date" class="userInput" />
+                        </div>
+                        <div class="userInfo">
+                            <div *ngIf="user === editedUser" class="btn-group btn-primary groupBtn">
+                                <button class="btn btn-success button"
+                                    (click)="apdateUser(user, 'company')">Apdate</button>
+                                <button class="btn btn-danger button" (click)="reject(user)">Reject</button>
+                            </div>
+                            <div *ngIf="user !== editedUser" class="btn-group btn-primary groupBtn">
+                                <button type="button" class="btn btn-block btn-md btn-primary button"
+                                    (click)="editUser(user)"> Edit </button>
+                                <button type="button" class="btn btn-block btn-md btn-danger button"
+                                    (click)="deleteUser(user)"> Delete User </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </clr-tab-content>
+    </clr-tab>
+    <clr-tab>
+        <button clrTabLink>Add User</button>
+        <clr-tab-content *clrIfActive>
+            <div style="margin-left: 50px;">
+                <app-registration [admin]="true"></app-registration>
             </div>
         </clr-tab-content>
     </clr-tab>
 </clr-tabs>
+
+<clr-modal [(clrModalOpen)]="modal">
+    <h3 class="modal-title">{{ modalTitle }}</h3>
+    <div class="modal-body">
+        <p> {{ modalContent }} </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal=false">Ok</button>
+    </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="deleteModal">
+    <h3 class="modal-title">{{ modalTitle }}</h3>
+    <div class="modal-body">
+        <p> {{ modalContent }} </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="cancel()">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="delete()">Delete</button>
+    </div>
+</clr-modal>

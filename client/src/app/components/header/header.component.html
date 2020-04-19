@@ -12,24 +12,32 @@
     <h3 class="modal-title">Change Password</h3>
     <div class="modal-body">
         <div class="container">
-        <div class="userInfo">
-            <span class="companyLabel">New Password</span>
-            <input type="password" class="userInput" name="password" placeholder="password"
-                [(ngModel)]="password" required />
+            <div class="userInfo">
+                <span class="companyLabel">Old Password</span>
+                <input type="password" class="userInput" name="oldPassword" placeholder="old password" [(ngModel)]="oldPassword"
+                    required />
+            </div>
+            <div class="userInfo">
+                <span class="companyLabel">New Password</span>
+                <input type="password" class="userInput" name="password" placeholder="password" [(ngModel)]="password"
+                    required />
+            </div>
+            <div class="userInfo">
+                <span class="companyLabel">Confirm</span>
+                <input type="password" class="userInput" name="cPassword" placeholder="password" [(ngModel)]="cPassword"
+                    required />
+            </div>
+            <div *ngIf="showPasswordErrorMessage" class="error active">
+                Passwords don't match!
+            </div>
+            <div *ngIf="showPasswordEmptyMessage" class="error active">
+                Passwords can't be empty!
+            </div>
+            <div *ngIf="showPasswordPatternErrorMessage" class="error active">
+                Passwords must have minimum 7 characters, at least one capital letter, one
+                number and one special character, and must begin with a letter!
+            </div>
         </div>
-        <div class="userInfo">
-            <span class="companyLabel">Confirm</span>
-            <input type="password" class="userInput" name="cPassword" placeholder="password"
-            [(ngModel)]="cPassword" required />
-        </div>
-        <div *ngIf="showPasswordErrorMessage" class="error active">
-            Passwords don't match!
-        </div>
-        <div *ngIf="showPasswordPatternErrorMessage" class="error active">
-            Passwords must have minimum 7 characters, at least one capital letter, one
-            number and one special character, and must begin with a letter!
-        </div>
-    </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="change()">Change</button>
@@ -40,7 +48,7 @@
 <clr-modal [(clrModalOpen)]="notification">
     <h3 class="modal-title">Change Password</h3>
     <div class="modal-body">
-       <p>You successfully changed password!</p>
+        <p>You successfully changed password!</p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="notification=false">Ok</button>

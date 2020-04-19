@@ -106,4 +106,5 @@ clr-tab-content, clr-tab {
 
 .button {
     width: 50%;
+    border-radius: 0;
 }

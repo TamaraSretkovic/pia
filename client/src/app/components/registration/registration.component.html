@@ -1,7 +1,8 @@
 <div class="container">
     <clr-accordion style="margin: 0;">
         <clr-accordion-panel>
-            <clr-accordion-title>Register As A Farmer</clr-accordion-title>
+            <clr-accordion-title *ngIf="!admin">Register As A Farmer</clr-accordion-title>
+            <clr-accordion-title *ngIf="admin">Register A Farmer</clr-accordion-title>
             <clr-accordion-content *clrIfExpanded>
                 <div class="innerContainer">
 
@@ -75,7 +76,8 @@
         </clr-accordion-panel>
 
         <clr-accordion-panel>
-            <clr-accordion-title>Register As A Company</clr-accordion-title>
+            <clr-accordion-title *ngIf="!admin">Register As A Company</clr-accordion-title>
+            <clr-accordion-title *ngIf="admin">Register A Company</clr-accordion-title>
             <clr-accordion-content *clrIfExpanded>
                 <div class="innerContainer">
 
@@ -138,7 +140,7 @@
             </clr-accordion-content>
         </clr-accordion-panel>
     </clr-accordion>
-    <button type="button" style="margin: 0;" class="btn btn-block btn-md btn-primary button" (click)="login()">
+    <button *ngIf="!admin" type="button" style="margin: 0;" class="btn btn-block btn-md btn-primary button" (click)="login()">
         Login
     </button>
 </div>
@@ -146,7 +148,7 @@
 <clr-modal [(clrModalOpen)]="modal">
     <h3 class="modal-title">Registration</h3>
     <div class="modal-body">
-        <p>You successfully send registration request!</p>
+        <p> {{ modalContent }} </p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="ok()">Ok</button>
