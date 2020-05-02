@@ -4,6 +4,7 @@ const router = express.Router();
 
 const ctrlUser = require('../controllers/user.controller');
 const ctrlRegisterRequest = require('../controllers/registrationRequest.controller');
+const ctrlFarmer = require('../controllers/farmer.controller');
 
 const jwtHelper = require('../config/jwtHelper');
 
@@ -25,6 +26,16 @@ router.post('/users',jwtHelper.verifyJwtToken, ctrlUser.updateUser);
 
 // user
 router.post('/change_password',jwtHelper.verifyJwtToken, ctrlUser.changePassword);
+
+// farmer
+router.post('/nurserys', jwtHelper.verifyJwtToken, ctrlFarmer.getNurserys);
+router.get('/nursery/:id', jwtHelper.verifyJwtToken, ctrlFarmer.getNursery);
+router.post('/nursery/:id', jwtHelper.verifyJwtToken, ctrlFarmer.updateNursery);
+router.post('/nursery', jwtHelper.verifyJwtToken, ctrlFarmer.addNursery);
+
+router.post('/updateSeedling', jwtHelper.verifyJwtToken, ctrlFarmer.updateSeedling);
+router.post('/updateNursery', ctrlFarmer.updateNursery);
+
 
 
 module.exports = router;

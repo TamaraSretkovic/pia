@@ -1,2 +1,148 @@
 <app-header></app-header>
-<p>company works!</p>
+<div class="white"></div>
+<clr-tabs style="position: absolute;">
+    <clr-tab>
+        <button clrTabLink id="link1">Order Requests</button>
+        <clr-tab-content class="requestContainer" id="content1" *clrIfActive="true">
+            <div class="container">
+                <div class="farmerR">
+                    <h3 class="title">Order Requests</h3>
+                    <h4 class="title" *ngIf="oRequests.length === 0">No order requests!</h4>
+                    <div class="requestList" *ngFor="let request of oRequests">
+                        <div class="userInfo">
+                            <span class="userLabel">Name</span>
+                            <span class="userInput"> {{ request.name }} </span>
+                        </div>
+                        <div class="userInfo">
+                            <span class="userLabel">Quantity</span>
+                            <span class="userInput"> {{ request.quantity }} </span>
+                        </div>
+                        <div class="userInfo">
+                            <span class="companyLabel">Username</span>
+                            <span class="userInput"> {{ request.username }} </span>
+                        </div>
+                        <div class="userInfo">
+                            <span class="userLabel">Status</span>
+                            <span class="userInput"> {{ request.status }} </span>
+                        </div>
+                        <div class="userInfo">
+                            <span class="userLabel">Date</span>
+                            <span class="userInput"> {{ request.date }} </span>
+                        </div>
+                        <div class="userInfo">
+                            <div class="btn-group btn-primary groupBtn">
+                                <button class="btn btn-success button"
+                                    (click)="acceptRequest(request)">Accept</button>
+                                <button class="btn btn-danger button"
+                                    (click)="deleteRequest(request)">Reject</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </clr-tab-content>
+    </clr-tab>
+    <clr-tab>
+        <button clrTabLink>Manage Products</button>
+        <clr-tab-content *clrIfActive>
+            <div class="container">
+                <div class="farmerR">
+                    <h3 class="title">Products</h3>
+                    <h4 class="title" *ngIf="products.length === 0">No products!</h4>
+                    <div class="requestList" *ngFor="let product of products">
+                        <div class="userInfo">
+                            <span class="userLabel">Name</span>
+                            <span class="userInput"> {{ product.name }} </span>
+                        </div>
+                        <div class="userInfo">
+                            <span class="userLabel">Quantity</span>
+                            <span class="userInput"> {{ product.quantity }} </span>
+                        </div>
+                        <div class="userInfo">
+                            <div class="btn-group btn-primary groupBtn">
+                                <button class="btn btn-success button" (click)="info(product)">Info</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </clr-tab-content>
+    </clr-tab>
+    <clr-tab>
+        <button clrTabLink>Add Product</button>
+        <clr-tab-content *clrIfActive>
+            <div style="margin-left: 50px; margin-top: 50px;">
+                <form clrStepper [formGroup]="form" (ngSubmit)="submit()">
+                    <clr-stepper-panel formGroupName="name">
+                        <clr-step-title>Name</clr-step-title>
+                        <clr-step-description>Name new product.</clr-step-description>
+                        <clr-step-content *clrIfExpanded>
+                            <clr-input-container>
+                                <label>Name</label>
+                                <input clrInput formControlName="name" />
+                                <clr-control-error *clrIfError="'required'">Name Required</clr-control-error>
+                            </clr-input-container>
+
+                            <clr-select-container>
+                                <label>Type</label>
+                                <select clrSelect name="options" formControlName="type">
+                                    <option value="true">plant</option>
+                                    <option value="false">preparation</option>
+                                </select>
+                                <clr-control-error *clrIfError="'required'">Type Required</clr-control-error>
+                            </clr-select-container>
+                            <button clrStepButton="next">next</button>
+                        </clr-step-content>
+                    </clr-stepper-panel>
+
+                    <clr-stepper-panel formGroupName="about">
+                        <clr-step-title>Description</clr-step-title>
+                        <clr-step-description>Describe your product.</clr-step-description>
+                        <clr-step-content *clrIfExpanded>
+                            <clr-input-container>
+                                <label>Description</label>
+                                <input clrInput formControlName="description" />
+                                <clr-control-error *clrIfError="'required'">Description Required</clr-control-error>
+                            </clr-input-container>
+                            <button clrStepButton="next">next</button>
+                        </clr-step-content>
+                    </clr-stepper-panel>
+
+                    <clr-stepper-panel formGroupName="quantity">
+                        <clr-step-title>Quantity</clr-step-title>
+                        <clr-step-description>How many?</clr-step-description>
+                        <clr-step-content *clrIfExpanded>
+                            <clr-input-container>
+                                <label>Quantity</label>
+                                <input clrInput formControlName="quantity" min="0"/>
+                                <clr-control-error *clrIfError="'required'">Quantity Required</clr-control-error>
+                            </clr-input-container>
+                            <button clrStepButton="submit">submit</button>
+                        </clr-step-content>
+                    </clr-stepper-panel>
+                </form>
+            </div>
+        </clr-tab-content>
+    </clr-tab>
+</clr-tabs>
+
+<clr-modal [(clrModalOpen)]="modal">
+    <h3 class="modal-title">{{ modalTitle }}</h3>
+    <div class="modal-body">
+        <p> {{ modalContent }} </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal=false">Ok</button>
+    </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="deleteModal">
+    <h3 class="modal-title">{{ modalTitle }}</h3>
+    <div class="modal-body">
+        <p> {{ modalContent }} </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="cancel()">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="delete()">Delete</button>
+    </div>
+</clr-modal>

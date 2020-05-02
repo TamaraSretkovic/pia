@@ -1,2 +1,86 @@
 <app-header></app-header>
-<p>farmer works!</p>
+
+<div class="white"></div>
+<clr-tabs style="position: absolute;">
+    <clr-tab>
+        <button clrTabLink id="link1">Nurserys</button>
+        <clr-tab-content class="requestContainer" id="content1" *clrIfActive="true">
+            <div class="container">
+                <div class="row">
+                    <h3 class="title">Nurserys</h3>
+                    <h4 class="title" *ngIf="nurserys.length === 0">No farmer requests!</h4>
+                    <div class="requestList" *ngFor="let nursery of nurserys">
+                        <h4 class="title"> {{ nursery.name }}</h4>
+                        <div class="userInfo">
+                            <span class="userLabel">Seedlings number</span>
+                            <span class="userInput"> {{ nursery.seedlings }} </span>
+                        </div>
+                        <div class="userInfo">
+                            <span class="userLabel">Free space </span>
+                            <span class="userInput"> {{ nursery.capacity - nursery.seedlings }} </span>
+                        </div>
+                        <div class="userInfo">
+                            <span class="userLabel">Amount of water</span>
+                            <span class="userInput"> {{ nursery.water }} </span>
+                        </div>
+                        <div class="userInfo">
+                            <span class="userLabel">Temperature</span>
+                            <span class="userInput"> {{ nursery.temp }} </span>
+                        </div>
+                        <div class="userInfo">
+                            <button type="button" class="btn btn-block btn-success button" (click)="open(nursery)">Open
+                                Menu</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </clr-tab-content>
+    </clr-tab>
+    <clr-tab>
+        <button clrTabLink>Add New Nursery</button>
+        <clr-tab-content *clrIfActive>
+            <div class="addContainer">
+                <form class="clr-form" [formGroup]="newNusrery">
+                    <div class="userInfo">
+                        <span class="userLabel">Nursery Name</span>
+                        <input type="text" class="userInput" name="name" placeholder="nursery name"
+                            formControlName="name" autofocus="autofocus" required />
+                    </div>
+                    <div class="userInfo">
+                        <span class="userLabel">Place</span>
+                        <input type="text" class="userInput" name="place" placeholder="place" formControlName="place"
+                            autofocus="autofocus" required />
+                    </div>
+                    <div class="userInfo">
+                        <span class="userLabel">Width</span>
+                        <input type="number" class="userInput" name="width" placeholder="width" formControlName="width"
+                            autofocus="autofocus" step="1" required />
+                    </div>
+                    <div class="userInfo">
+                        <span class="userLabel">Height</span>
+                        <input type="number" class="userInput" name="height" placeholder="height"
+                            formControlName="height" autofocus="autofocus" step="1" required />
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-block btn-md btn-primary button" (click)="addNursery()">
+                            Add Nursery
+                        </button>
+                    </div>
+                    <div *ngIf="showServerErrorMessage" class="error active">
+                        Server error, read in console
+                    </div>
+                </form>
+            </div>
+        </clr-tab-content>
+    </clr-tab>
+</clr-tabs>
+
+<clr-modal [(clrModalOpen)]="modal">
+    <h3 class="modal-title">{{ modalTitle }}</h3>
+    <div class="modal-body">
+        <p> {{ modalContent }} </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal=false">Ok</button>
+    </div>
+</clr-modal>

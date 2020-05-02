@@ -1,0 +1,93 @@
+<app-header></app-header>
+<button class="btn btn-inverse btn-icon backBtn" (click)="back()">
+    <clr-icon shape="undo"></clr-icon>
+</button>
+<div class="container" *ngIf="fetching">
+    <p class="spinner spinner-lg" style="margin-left: 300px;">
+        Loading...
+    </p>
+</div>
+<div class="container" *ngIf="!fetching">
+    <h4 class="title">{{ nursery.name }}</h4>
+    <div class="userInfo">
+        <span class="userLabel">Amount of water</span>
+        <input type="number" min="0" step="1" class="userInput" [(ngModel)]="nursery.water" />
+    </div>
+    <div class="userInfo">
+        <span class="userLabel">Temperature</span>
+        <input type="number" step="1" class="userInput" [(ngModel)]="nursery.temp" />
+    </div>
+    <div class="userInfo">
+        <button type="submit" class="btn btn-block btn-md btn-primary button" (click)="saveChanges()">
+            Save changes
+        </button>
+    </div>
+    <div class="nursery">
+        <div class="block" *ngFor="let seedling of seedlings" [style.height.px]="heightPlace"
+            [style.width.px]="widthPlace">
+            <div *ngIf="seedling.status==='full'" (click)="menageSeed(seedling)" class="place placeFull tooltip">
+                <clr-icon shape="tree" class="tree"></clr-icon>
+                <div class="tooltiptext">
+                    <p class="seedInfo">Name: {{ seedling.name }}</p>
+                    <p class="seedInfo">Producer: {{ seedling.producer }}</p>
+                    <clr-progress-bar [clrValue]="(seedling.progress * 100) / seedling.fullTime" [clrMax]="100"
+                        clrSuccess clrLabeled>
+                    </clr-progress-bar>
+                </div>
+            </div>
+            <div *ngIf="seedling.status==='empty'" (click)="insertSeed(seedling)" class="place placeEmpty"></div>
+            <div *ngIf="seedling.status==='notReady'" class="place notReady">
+                <clr-icon shape="ban" class="tree"></clr-icon>
+            </div>
+        </div>
+    </div>
+</div>
+
+<clr-modal [(clrModalOpen)]="updateSeed">
+    <h3 class="modal-title">{{ modalTitle }}</h3>
+    <div class="modal-body">
+        <clr-select-container>
+            <label>Select a seedling from your warehous!</label>
+            <select clrSelect name="options" [(ngModel)]="selectedSeed">
+              <option *ngFor="let seed of avilabileSeeds" value="{{seed.id}}"> {{ seed.name }} : {{ seed.producer}} </option>
+            </select>
+          </clr-select-container>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-success" (click)="add()">Add</button>
+        <button type="button" class="btn btn-danger" (click)="cancel()">Cancel</button>
+    </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="transplantSeedModal">
+    <h3 class="modal-title">{{ modalTitle }}</h3>
+    <div class="modal-body"> {{ modalContent }} </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-success" (click)="yes()">Yes</button>
+        <button type="button" class="btn btn-danger" (click)="cancel()">No</button>
+    </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="addSuplementModal">
+    <h3 class="modal-title">{{ modalTitle }}</h3>
+    <div class="modal-body">
+        <clr-select-container>
+            <label>Select a seedling from your warehous!</label>
+            <select clrSelect name="options" [(ngModel)]="selectedSuplement">
+              <option *ngFor="let suplement of avilabileSuplements" value="{{suplement.id}}"> {{ suplement.name }} : {{ suplement.producer}} </option>
+            </select>
+          </clr-select-container>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-success" (click)="addSuplement()">Add</button>
+        <button type="button" class="btn btn-danger" (click)="cancel()">Cancel</button>
+    </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="modal">
+    <h3 class="modal-title">{{ modalTitle }}</h3>
+    <div class="modal-body"> {{ modalContent }} </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal=false">Ok</button>
+    </div>
+</clr-modal>

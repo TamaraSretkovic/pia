@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CookieService } from 'angular2-cookie/core';
+import { Seedling } from '../model/seedling.model';
 
 @Injectable({
     providedIn: 'root'
@@ -15,6 +16,10 @@ export class ApiService {
     changePasswordUrl = '/v0.1/change_password';
     registrationRequestsUrl = '/v0.1/registration_request';
     usersUrl = '/v0.1/users';
+    nurseryUrl = '/v0.1/nursery';
+    nurserysUrl = '/v0.1/nurserys';
+    updateSeedlingUrl = '/v0.1/updateSeedling';
+    saveNurseryChangesUrl = '/v0.1/updateNursery';
 
     constructor(private router: Router, private http: HttpClient,
         private cookieService: CookieService) {
@@ -29,10 +34,11 @@ export class ApiService {
 
     // ***** user stuff *****
 
-    setCredentials(username, userType, token): void {
+    setCredentials(username, userType, token, id): void {
         this.cookieService.put('username', username);
         this.cookieService.put('token', token);
         this.cookieService.put('userType', userType);
+        this.cookieService.put('id', id);
     }
 
     clearCredentials(): void {
@@ -40,6 +46,11 @@ export class ApiService {
         this.cookieService.remove('token');
         this.cookieService.remove('username');
         this.cookieService.remove('userType');
+        this.cookieService.remove('id');
+    }
+
+    getId(): string {
+        return this.cookieService.get('id');
     }
 
     getUsername(): string {
@@ -126,5 +137,29 @@ export class ApiService {
 
     updateUser(user: any): Observable<any> {
         return this.http.post<any>(`${this.baseUrl}${this.usersUrl}`, user);
+    }
+
+    // ***** farmer stuff ******
+
+    getNurserys(id: string): Observable<any> {
+        return this.http.post<any>(`${this.baseUrl}${this.nurserysUrl}`, {id: id});
+    }
+
+    getNursery(id: string): Observable<any> {
+        return this.http.get<any>(`${this.baseUrl}${this.nurseryUrl}/${id}`);
+    }
+
+    addNursery(nurseryInfo: any): Observable<any> {
+        return this.http.post<any>(`${this.baseUrl}${this.nurseryUrl}`, nurseryInfo);
+    }
+
+    // ***** nursery stuff *****
+
+    updateSeedling(seedInfo: Seedling, nurseryId: string): Observable<any> {
+        return this.http.post<any>(`${this.baseUrl}${this.updateSeedlingUrl}`, {id: nurseryId, seedling: seedInfo});
+    }
+
+    saveNurseryChanges(nurseryId: string, temp: number, water: number){
+        return this.http.post<any>(`${this.baseUrl}${this.saveNurseryChangesUrl}`, {id: nurseryId, temp: temp, water: water});
     }
 }

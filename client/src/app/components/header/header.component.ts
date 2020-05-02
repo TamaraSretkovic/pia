@@ -45,7 +45,7 @@ export class HeaderComponent implements OnInit {
     this.showPasswordPatternErrorMessage = false;
     this.showPasswordEmptyMessage = false;
 
-    if (this.oldPassword === '') {
+    if (this.oldPassword === '' || this.password === '' || this.oldPassword === this.password) {
       this.showPasswordEmptyMessage = true;
       return;
     }

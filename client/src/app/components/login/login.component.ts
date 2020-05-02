@@ -28,7 +28,7 @@ export class LoginComponent {
     const username = this.loginForm.value.username;
 
     this.service.login(this.loginForm.value).subscribe(data => {
-      this.service.setCredentials(username, data.userType, data.token);
+      this.service.setCredentials(username, data.userType, data.token, data.id);
       this.service.nextPage();
       this.showErrorMessage = false;
     },

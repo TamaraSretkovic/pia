@@ -16,6 +16,8 @@ import { AdminComponent } from './components/admin/admin.component';
 import { HeaderComponent } from './components/header/header.component';
 import { CompanyComponent } from './components/company/company.component';
 import { FarmerComponent } from './components/farmer/farmer.component';
+import { NurseryComponent } from './components/nursery/nursery.component';
+import { WarehouseComponent } from './components/warehouse/warehouse.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,9 @@ import { FarmerComponent } from './components/farmer/farmer.component';
     AdminComponent,
     HeaderComponent,
     CompanyComponent,
-    FarmerComponent
+    FarmerComponent,
+    NurseryComponent,
+    WarehouseComponent
   ],
   imports: [
     BrowserModule,
