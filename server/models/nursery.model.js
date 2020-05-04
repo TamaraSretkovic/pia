@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 
-const Seedling = mongoose.model('Seedling');
-
 var nurserySchema = new mongoose.Schema({
     farmerId: {
         type: String,

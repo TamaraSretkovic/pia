@@ -22,9 +22,14 @@ export class NurseryComponent implements OnInit, OnDestroy {
 
   seedlings: Array<Seedling>;
 
-  avilabileSeeds: Array<Seedling>;
-  avilabileSuplements: Array<Product>;
+  avilabileSeeds: Array<any>;
+  avilabileSuplements: Array<any>;
+  waithingSeeds: Array<any>;
+  waithingProducts: Array<any>;
+
   menagingSeedling: Seedling;
+  menagingOrder: Seedling;
+
   updateSeed: boolean;
   transplantSeedModal: boolean;
   addSuplementModal: boolean;
@@ -39,44 +44,13 @@ export class NurseryComponent implements OnInit, OnDestroy {
     this.seedlings = new Array<Seedling>();
     this.fetching = true;
     this.nursery = new Nursery();
-    this.avilabileSeeds = [{
-      name: 'Drvo',
-      producer: 'Company',
-      progress: 0,
-      status: 'full',
-      fullTime: 20,
-      quantity: 1,
-      id: '0'
-    },
-    {
-      name: 'Drvo',
-      producer: 'Company',
-      progress: 0,
-      status: 'full',
-      fullTime: 20,
-      quantity: 1,
-      id: '1'
-    }];
-
-    this.avilabileSuplements = [{
-      name: 'Prasak',
-      producer: 'Company',
-      id: '0',
-      power: 2,
-      quantity: 1
-    }, {
-      name: 'Prasak2',
-      producer: 'Company',
-      id: '0',
-      power: 5,
-      quantity: 1
-    }];
   }
 
   ngOnInit(): void {
     this.sub = this.route.params.subscribe(params => {
       this.id = params['id'];
-      this.getNursery()
+      this.getNursery();
+      this.getWarehouse();
     });
   }
 
@@ -114,6 +88,38 @@ export class NurseryComponent implements OnInit, OnDestroy {
     });
   }
 
+  getWarehouse() {
+    this.service.getWarehouse(this.id).subscribe(data => {
+      this.avilabileSuplements = [];
+      this.avilabileSeeds = [];
+      this.waithingSeeds = [];
+      this.waithingProducts = [];
+      data.seedlings.forEach(seed => {
+        this.avilabileSeeds.push(seed);
+      });
+      data.products.forEach(prod => {
+        this.avilabileSuplements.push(prod);
+      });
+      data.waitingSeedlings.forEach(seed => {
+        this.waithingSeeds.push(seed);
+      });
+      data.waithingProducts.forEach(prod => {
+        this.waithingProducts.push(prod);
+      });
+    });
+  }
+
+  updateWarehouse() {
+    this.service.updateWarehouse(this.id, this.avilabileSeeds, this.avilabileSuplements).subscribe(res => {
+      console.log(res.message);
+    }, err => {
+      console.log(err);
+      this.modalTitle = 'Update warehouse';
+      this.modalContent = err.message;
+      this.modal = true;
+    });
+  }
+
   back() {
     this.router.navigate(['/farmer']);
   }
@@ -148,34 +154,47 @@ export class NurseryComponent implements OnInit, OnDestroy {
   add() {
     let i = 0;
     this.updateSeed = false;
+    console.log('add');
 
     const oldSeedling = Object(this.menagingSeedling);
+    console.log(this.avilabileSeeds);
+
     this.avilabileSeeds.forEach(el => {
-      if (this.selectedSeed === el.id) {
+      if (this.selectedSeed === el._id) {
         this.menagingSeedling.name = el.name;
         this.menagingSeedling.producer = el.producer;
         this.menagingSeedling.fullTime = el.fullTime;
         this.menagingSeedling.progress = el.progress;
-        this.menagingSeedling.quantity = el.quantity;
+        this.menagingSeedling.quantity = 1;
         this.menagingSeedling.status = el.status;
+        const index = i;
+
         // id od seedling ce biti index u nizu i nece se menjati radi lakse manipulacije
         this.service.updateSeedling(this.menagingSeedling, this.id).subscribe(res => {
-          this.modalTitle = 'Seedling Addition';
+          el.quantity--;
+          if (el.quantity === 0) {
+            this.avilabileSeeds.splice(index, 1);
+          }
           this.modalContent = res.message;
-          this.modal = true;
+          this.service.updateWarehouse(this.id, this.avilabileSeeds, this.avilabileSuplements).subscribe(res => {
+            this.modalTitle = 'Seedling Addition';
+            this.modal = true;
+          }, err => {
+            this.menagingSeedling = oldSeedling;
+            this.modalTitle = 'Update warehous';
+            this.modalContent = err.message;
+            this.modal = true;
+          });
         }, err => {
           this.menagingSeedling = oldSeedling;
           this.modalTitle = 'Seedling Addition';
           this.modalContent = err.message;
           this.modal = true;
         });
-
-        // delete from warehouse
-        this.avilabileSeeds.splice(i, 1);
         return;
-      };
-      i++;
-
+      } else {
+        i++;
+      }
     })
     this.menagingSeedling = undefined;
   }
@@ -217,13 +236,28 @@ export class NurseryComponent implements OnInit, OnDestroy {
   addSuplement() {
     let i = 0;
     this.addSuplementModal = false;
-
-    const oldSeedling = Object(this.menagingSeedling);
+    
+    const oldSeedling = Object(this.menagingSeedling);    
     this.avilabileSuplements.forEach(el => {
-      if (this.selectedSuplement === el.id) {
+      if (this.selectedSuplement === el._id) {
+        const index = i;
         this.menagingSeedling.progress = (this.menagingSeedling.progress + el.power) >= this.menagingSeedling.fullTime ? this.menagingSeedling.fullTime : this.menagingSeedling.progress + el.power;
         // id od seedling ce biti index u nizu i nece se menjati radi lakse manipulacije
-        this.service.updateSeedling(this.menagingSeedling, this.id).subscribe(res => {
+        this.service.updateSeedling(this.menagingSeedling, this.id).subscribe(res => {          
+          el.quantity--;
+          if (el.quantity === 0) {
+            this.avilabileSuplements.splice(index, 1);
+          }
+          this.modalContent = res.message;
+          this.service.updateWarehouse(this.id, this.avilabileSeeds, this.avilabileSuplements).subscribe(res => {
+            this.modalTitle = 'Suplement Addition';
+            this.modal = true;
+          }, err => {
+            this.menagingSeedling = oldSeedling;
+            this.modalTitle = 'Update warehous';
+            this.modalContent = err.message;
+            this.modal = true;
+          });
           this.modalTitle = 'Suplement Addition';
           this.modalContent = res.message;
           this.modal = true;
@@ -233,15 +267,14 @@ export class NurseryComponent implements OnInit, OnDestroy {
           this.modalContent = err.message;
           this.modal = true;
         });
-
-        // delete from warehouse
-        this.avilabileSuplements.splice(i, 1);
         return;
       };
       i++;
-
     })
     this.menagingSeedling = undefined;
   }
 
+  cancelOrder(order: any) {
+
+  }
 }

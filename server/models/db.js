@@ -16,3 +16,5 @@ require('./user.model');
 require('./registrationRequest.model');
 require('./seedling.model');
 require('./nursery.model');
+require('./product.model');
+require('./warehous.model');

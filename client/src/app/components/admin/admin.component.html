@@ -1,9 +1,9 @@
 <app-header></app-header>
 <div class="white"></div>
-<clr-tabs style="position: absolute;">
+<clr-tabs style="position: absolute; width: 100%;">
     <clr-tab>
         <button clrTabLink id="link1">Registration Requests</button>
-        <clr-tab-content class="requestContainer" id="content1" clrIfActive="true">
+        <clr-tab-content class="requestContainer" id="content1" *clrIfActive="true">
             <div class="container">
                 <div class="farmerR">
                     <h3 class="title">Farmer Requests</h3>

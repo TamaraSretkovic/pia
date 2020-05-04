@@ -34,8 +34,9 @@ router.post('/nursery/:id', jwtHelper.verifyJwtToken, ctrlFarmer.updateNursery);
 router.post('/nursery', jwtHelper.verifyJwtToken, ctrlFarmer.addNursery);
 
 router.post('/updateSeedling', jwtHelper.verifyJwtToken, ctrlFarmer.updateSeedling);
-router.post('/updateNursery', ctrlFarmer.updateNursery);
+router.post('/updateNursery', jwtHelper.verifyJwtToken, ctrlFarmer.updateNursery);
 
-
+router.get('/warehouse/:nurseryId', ctrlFarmer.getWarehouse);
+router.post('/warehouse', ctrlFarmer.updateWarehouse);
 
 module.exports = router;

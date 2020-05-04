@@ -3,6 +3,8 @@ const _ = require('lodash');
 
 const Nursery = mongoose.model('Nursery');
 const Seedling = mongoose.model('Seedling');
+const Warehouse = mongoose.model('Warehouse');
+const Product = mongoose.model('Product');
 
 module.exports.getNurserys = (req, res, next) => {
     Nursery.find({ farmerId: req.body.id }).then(result => {
@@ -24,17 +26,6 @@ module.exports.getNursery = (req, res, next) => {
         });
 };
 
-module.exports.updateNursery = (req, res, next) => {
-    // TO DO
-    // Nursery.find({_id: req.params.id}).then(result => {
-    //     res.status(200).send(result);
-    // })
-    //     .catch(err => {
-    //         console.log("error u get nursery");
-    //         res.status(400).json({ message: err });
-    //     });
-};
-
 module.exports.addNursery = (req, res, next) => {
     var nursery = new Nursery();
     nursery.farmerId = req.body.id;
@@ -52,13 +43,22 @@ module.exports.addNursery = (req, res, next) => {
         seedling.fullTime = '';
         seedling.progress = '';
         seedling.status = 'empty';
-        seedling.date = new Date();
         nursery.seedlings.push(seedling);
     };
 
     nursery.save((err, doc) => {
-        if (!err)
-            res.send({ message: 'Successfully added new nursery!' });
+        if (!err) {
+            var warehouse = new Warehouse();
+            warehouse.nurseryId = doc._id;
+            warehouse.save((err, doc) => {
+                if (!err)
+                    res.send({ message: 'Successfully added new nursery!' });
+                else {
+                    console.log("error u add nursery, add warehous");
+                    res.status(400).json({ message: err });
+                }
+            });
+        }
         else {
             console.log("error u add nursery");
             res.status(400).json({ message: err });
@@ -105,10 +105,58 @@ module.exports.updateSeedling = (req, res, next) => {
 
 
 module.exports.updateNursery = (req, res, next) => {
-    Nursery.updateOne({ _id: req.body.id }, {temp: req.body.temp, water: req.body.water}).then(success => {
+    Nursery.updateOne({ _id: req.body.id }, { temp: req.body.temp, water: req.body.water }).then(success => {
         res.send({ message: 'Successfully saved nursery changes!' });
     }).catch(err => {
         console.log('error u update nursery');
         res.status(400).json({ message: err });
     });
 }
+
+module.exports.getWarehouse = (req, res, next) => {
+    Warehouse.findOne({ nurseryId: req.params.nurseryId }).then(result => {
+        res.status(200).send(result);
+    })
+        .catch(err => {
+            console.log("error u get warehous");
+            res.status(400).json({ message: err });
+        });
+};
+
+module.exports.updateWarehouse = (req, res, next) => {
+
+    Warehouse.findOne({ nurseryId: req.body.id }).then(warehouse => {
+        warehouse.seedlings = [];
+        req.body.seedlings.forEach(seed => {
+            const seedling = new Seedling();
+            seedling.name = seed.name;
+            seedling.producer = seed.producer;
+            seedling.fullTime = seed.fullTime;
+            seedling.progress = seed.progress;
+            seedling.quantity = seed.quantity;
+            seedling.status = seed.status;
+            warehouse.seedlings.push(seedling);
+        });
+
+        warehouse.products = [];
+        req.body.products.forEach(product => {
+            const prod = new Product();
+            prod.name = product.name;
+            prod.producer = product.producer;
+            prod.power = product.power;
+            prod.quantity = product.quantity;
+            warehouse.products.push(prod);
+        });
+        Warehouse.updateOne({ _id: warehouse._id }, warehouse).then(success => {
+            res.send({ message: 'Successfully updated warehouse!' });
+
+        }).catch(err => {
+            console.log('error u update warehouse, updateone');
+            res.status(400).json({ message: err });
+        });
+    })
+        .catch(err => {
+            console.log("error u update warehous");
+            res.status(400).json({ message: err });
+        });
+};

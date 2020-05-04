@@ -1,47 +1,149 @@
 <app-header></app-header>
-<button class="btn btn-inverse btn-icon backBtn" (click)="back()">
-    <clr-icon shape="undo"></clr-icon>
-</button>
-<div class="container" *ngIf="fetching">
-    <p class="spinner spinner-lg" style="margin-left: 300px;">
-        Loading...
-    </p>
-</div>
-<div class="container" *ngIf="!fetching">
-    <h4 class="title">{{ nursery.name }}</h4>
-    <div class="userInfo">
-        <span class="userLabel">Amount of water</span>
-        <input type="number" min="0" step="1" class="userInput" [(ngModel)]="nursery.water" />
-    </div>
-    <div class="userInfo">
-        <span class="userLabel">Temperature</span>
-        <input type="number" step="1" class="userInput" [(ngModel)]="nursery.temp" />
-    </div>
-    <div class="userInfo">
-        <button type="submit" class="btn btn-block btn-md btn-primary button" (click)="saveChanges()">
-            Save changes
-        </button>
-    </div>
-    <div class="nursery">
-        <div class="block" *ngFor="let seedling of seedlings" [style.height.px]="heightPlace"
-            [style.width.px]="widthPlace">
-            <div *ngIf="seedling.status==='full'" (click)="menageSeed(seedling)" class="place placeFull tooltip">
-                <clr-icon shape="tree" class="tree"></clr-icon>
-                <div class="tooltiptext">
-                    <p class="seedInfo">Name: {{ seedling.name }}</p>
-                    <p class="seedInfo">Producer: {{ seedling.producer }}</p>
-                    <clr-progress-bar [clrValue]="(seedling.progress * 100) / seedling.fullTime" [clrMax]="100"
-                        clrSuccess clrLabeled>
-                    </clr-progress-bar>
+
+
+<div class="white"></div>
+<clr-tabs style="position: absolute; width: 100%;">
+    <clr-tab>
+        <button clrTabLink id="link1">Nursery</button>
+        <clr-tab-content class="requestContainer" id="content1" *clrIfActive="true">
+
+            <button class="btn btn-inverse btn-icon backBtn" (click)="back()">
+                <clr-icon shape="undo"></clr-icon>
+            </button>
+            <div class="container" *ngIf="fetching">
+                <p class="spinner spinner-lg" style="margin-left: 300px;">
+                    Loading...
+                </p>
+            </div>
+            <div class="container" *ngIf="!fetching">
+                <h4 class="title">{{ nursery.name }}</h4>
+                <div class="userInfo">
+                    <span class="userLabel">Amount of water</span>
+                    <input type="number" min="0" step="1" class="userInput" [(ngModel)]="nursery.water" />
+                </div>
+                <div class="userInfo">
+                    <span class="userLabel">Temperature</span>
+                    <input type="number" step="1" class="userInput" [(ngModel)]="nursery.temp" />
+                </div>
+                <div class="userInfo">
+                    <button type="submit" class="btn btn-block btn-md btn-primary button" (click)="saveChanges()">
+                        Save changes
+                    </button>
+                </div>
+                <div class="nursery">
+                    <div class="block" *ngFor="let seedling of seedlings" [style.height.px]="heightPlace"
+                        [style.width.px]="widthPlace">
+                        <div *ngIf="seedling.status==='full'" (click)="menageSeed(seedling)"
+                            class="place placeFull tooltip">
+                            <clr-icon shape="tree" class="tree"></clr-icon>
+                            <div class="tooltiptext">
+                                <p class="seedInfo">Name: {{ seedling.name }}</p>
+                                <p class="seedInfo">Producer: {{ seedling.producer }}</p>
+                                <clr-progress-bar [clrValue]="(seedling.progress * 100) / seedling.fullTime"
+                                    [clrMax]="100" clrSuccess clrLabeled>
+                                </clr-progress-bar>
+                            </div>
+                        </div>
+                        <div *ngIf="seedling.status==='empty'" (click)="insertSeed(seedling)" class="place placeEmpty">
+                        </div>
+                        <div *ngIf="seedling.status==='notReady'" class="place notReady">
+                            <clr-icon shape="ban" class="tree"></clr-icon>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div *ngIf="seedling.status==='empty'" (click)="insertSeed(seedling)" class="place placeEmpty"></div>
-            <div *ngIf="seedling.status==='notReady'" class="place notReady">
-                <clr-icon shape="ban" class="tree"></clr-icon>
+        </clr-tab-content>
+    </clr-tab>
+    <clr-tab>
+        <button clrTabLink>Warehouse</button>
+        <clr-tab-content *clrIfActive>
+            <button class="btn btn-inverse btn-icon backBtn" (click)="back()">
+                <clr-icon shape="undo"></clr-icon>
+            </button>
+            <div class="container" *ngIf="fetching">
+                <p class="spinner spinner-lg" style="margin-left: 300px;">
+                    Loading...
+                </p>
             </div>
-        </div>
-    </div>
-</div>
+            <div class="container" *ngIf="!fetching">
+                <h3 class="title">Seedlings</h3>
+                <h4 class="title" *ngIf="avilabileSeeds.length === 0">No seedlings yet!</h4>
+                <div class="requestList" *ngFor="let seed of avilabileSeeds">
+                    <div class="userInfo">
+                        <span class="userLabel">Seedling name</span>
+                        <span class="userInput"> {{ seed.name }} </span>
+                    </div>
+                    <div class="userInfo">
+                        <span class="userLabel">Seedling producer </span>
+                        <span class="userInput"> {{ seed.producer }} </span>
+                    </div>
+                    <div class="userInfo">
+                        <span class="userLabel">Quantity</span>
+                        <span class="userInput"> {{ seed.quantity }} </span>
+                    </div>
+                </div>
+                <h3 class="title">Suplements</h3>
+                <h4 class="title" *ngIf="avilabileSuplements.length === 0">No suplements yet!</h4>
+                <div class="requestList" *ngFor="let suplement of avilabileSuplements">
+                    <div class="userInfo">
+                        <span class="userLabel">Suplement name</span>
+                        <span class="userInput"> {{ suplement.name }} </span>
+                    </div>
+                    <div class="userInfo">
+                        <span class="userLabel">Suplement producer </span>
+                        <span class="userInput"> {{ suplement.producer }} </span>
+                    </div>
+                    <div class="userInfo">
+                        <span class="userLabel">Quantity</span>
+                        <span class="userInput"> {{ suplement.quantity }} </span>
+                    </div>
+                </div>
+                <h3 class="title">Orders</h3>
+                <h4 class="title" *ngIf="waithingSeeds.length === 0 && waithingProducts.length === 0">No orders yet!</h4>
+                <div class="requestList" *ngFor="let seed of waithingSeeds">
+                    <div class="userInfo">
+                        <span class="userLabel">Order name</span>
+                        <span class="userInput"> {{ seed.name }} </span>
+                    </div>
+                    <div class="userInfo">
+                        <span class="userLabel">Order producer </span>
+                        <span class="userInput"> {{ seed.producer }} </span>
+                    </div>
+                    <div class="userInfo">
+                        <span class="userLabel">Quantity</span>
+                        <span class="userInput"> {{ seed.quantity }} </span>
+                    </div>
+                    <div class="userInfo">
+                        <button type="submit" class="btn btn-block btn-md btn-danger button" (click)="cancelOrder(seed)">
+                            Cansel Order
+                        </button>
+                    </div>
+                </div>
+                <div class="requestList" *ngFor="let product of waithingProducts">
+                    <div class="userInfo">
+                        <span class="userLabel">Order name</span>
+                        <span class="userInput"> {{ product.name }} </span>
+                    </div>
+                    <div class="userInfo">
+                        <span class="userLabel">Order producer </span>
+                        <span class="userInput"> {{ product.producer }} </span>
+                    </div>
+                    <div class="userInfo">
+                        <span class="userLabel">Quantity</span>
+                        <span class="userInput"> {{ product.quantity }} </span>
+                    </div>
+                    <div class="userInfo">
+                        <button type="submit" class="btn btn-block btn-md btn-danger button" (click)="cancelOrder(product)">
+                            Cansel Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </clr-tab-content>
+    </clr-tab>
+</clr-tabs>
+
+
 
 <clr-modal [(clrModalOpen)]="updateSeed">
     <h3 class="modal-title">{{ modalTitle }}</h3>
@@ -49,9 +151,10 @@
         <clr-select-container>
             <label>Select a seedling from your warehous!</label>
             <select clrSelect name="options" [(ngModel)]="selectedSeed">
-              <option *ngFor="let seed of avilabileSeeds" value="{{seed.id}}"> {{ seed.name }} : {{ seed.producer}} </option>
+                <option *ngFor="let seed of avilabileSeeds" value="{{seed._id}}"> {{ seed.name }} :
+                    {{ seed.producer}} </option>
             </select>
-          </clr-select-container>
+        </clr-select-container>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-success" (click)="add()">Add</button>
@@ -72,11 +175,12 @@
     <h3 class="modal-title">{{ modalTitle }}</h3>
     <div class="modal-body">
         <clr-select-container>
-            <label>Select a seedling from your warehous!</label>
+            <label>Select a suplement from your warehous!</label>
             <select clrSelect name="options" [(ngModel)]="selectedSuplement">
-              <option *ngFor="let suplement of avilabileSuplements" value="{{suplement.id}}"> {{ suplement.name }} : {{ suplement.producer}} </option>
+                <option *ngFor="let suplement of avilabileSuplements" value="{{suplement._id}}"> {{ suplement.name }}
+                    : {{ suplement.producer}} </option>
             </select>
-          </clr-select-container>
+        </clr-select-container>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-success" (click)="addSuplement()">Add</button>

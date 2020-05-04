@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CookieService } from 'angular2-cookie/core';
 import { Seedling } from '../model/seedling.model';
+import { Product } from '../model/product.model';
 
 @Injectable({
     providedIn: 'root'
@@ -20,11 +21,12 @@ export class ApiService {
     nurserysUrl = '/v0.1/nurserys';
     updateSeedlingUrl = '/v0.1/updateSeedling';
     saveNurseryChangesUrl = '/v0.1/updateNursery';
+    warehouseUrl = '/v0.1/warehouse';
 
     constructor(private router: Router, private http: HttpClient,
         private cookieService: CookieService) {
-            this.setBaseUrl(`${window.location.protocol}//${window.location.hostname}:3000`);
-        }
+        this.setBaseUrl(`${window.location.protocol}//${window.location.hostname}:3000`);
+    }
 
     // ***** init *****
 
@@ -76,12 +78,12 @@ export class ApiService {
         this.router.navigate(['/']);
     }
 
-    nextPage():void {
-        if(this.getUserType() == 'admin') {
+    nextPage(): void {
+        if (this.getUserType() == 'admin') {
             this.router.navigate(['/admin']);
         } else if (this.getUserType() == 'farmer') {
             this.router.navigate(['/farmer']);
-        } else if(this.getUserType() == 'company') {
+        } else if (this.getUserType() == 'company') {
             this.router.navigate(['/company']);
         }
     }
@@ -130,7 +132,7 @@ export class ApiService {
     getUsers(): Observable<any> {
         return this.http.get<any>(`${this.baseUrl}${this.usersUrl}`);
     }
-    
+
     deleteUser(username: string): Observable<any> {
         return this.http.delete<any>(`${this.baseUrl}${this.usersUrl}/${username}`);
     }
@@ -142,7 +144,7 @@ export class ApiService {
     // ***** farmer stuff ******
 
     getNurserys(id: string): Observable<any> {
-        return this.http.post<any>(`${this.baseUrl}${this.nurserysUrl}`, {id: id});
+        return this.http.post<any>(`${this.baseUrl}${this.nurserysUrl}`, { id: id });
     }
 
     getNursery(id: string): Observable<any> {
@@ -156,10 +158,18 @@ export class ApiService {
     // ***** nursery stuff *****
 
     updateSeedling(seedInfo: Seedling, nurseryId: string): Observable<any> {
-        return this.http.post<any>(`${this.baseUrl}${this.updateSeedlingUrl}`, {id: nurseryId, seedling: seedInfo});
+        return this.http.post<any>(`${this.baseUrl}${this.updateSeedlingUrl}`, { id: nurseryId, seedling: seedInfo });
     }
 
-    saveNurseryChanges(nurseryId: string, temp: number, water: number){
-        return this.http.post<any>(`${this.baseUrl}${this.saveNurseryChangesUrl}`, {id: nurseryId, temp: temp, water: water});
+    saveNurseryChanges(nurseryId: string, temp: number, water: number) {
+        return this.http.post<any>(`${this.baseUrl}${this.saveNurseryChangesUrl}`, { id: nurseryId, temp: temp, water: water });
+    }
+
+    getWarehouse(nurseryId: string) {
+        return this.http.get<any>(`${this.baseUrl}${this.warehouseUrl}/${nurseryId}`);
+    }
+
+    updateWarehouse(nurseryId: string, seedlings: Seedling[], products: Product[]) {
+        return this.http.post<any>(`${this.baseUrl}${this.warehouseUrl}`, { id: nurseryId, seedlings: seedlings, products: products });
     }
 }

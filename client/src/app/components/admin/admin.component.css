@@ -89,7 +89,7 @@ clr-tab-content, clr-tab {
     padding: 7px;
     margin-bottom: 10px;
     text-align: center;
-    background-color: hsl(198, 0%, 87%);
+    background-color: rgb(202, 201, 201);
 }
 
 .requestList {
