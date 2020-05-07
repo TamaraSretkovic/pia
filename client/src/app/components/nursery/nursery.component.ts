@@ -4,6 +4,7 @@ import { ApiService } from 'src/app/services/api.service';
 import { Nursery } from 'src/app/model/nursery.model';
 import { Seedling } from 'src/app/model/seedling.model';
 import { Product } from 'src/app/model/product.model';
+import { HelperService } from 'src/app/services/helper.service';
 
 @Component({
   selector: 'app-nursery',
@@ -13,6 +14,7 @@ import { Product } from 'src/app/model/product.model';
 export class NurseryComponent implements OnInit, OnDestroy {
 
   id: string;
+  warehouseId: string;
   sub: any;
 
   nursery: Nursery;
@@ -24,8 +26,12 @@ export class NurseryComponent implements OnInit, OnDestroy {
 
   avilabileSeeds: Array<any>;
   avilabileSuplements: Array<any>;
-  waithingSeeds: Array<any>;
-  waithingProducts: Array<any>;
+
+
+  avilabileSeedsFiltered: Array<any>;
+  avilabileSuplementsFiltered: Array<any>;
+
+  orderRequests: Array<any>;
 
   menagingSeedling: Seedling;
   menagingOrder: Seedling;
@@ -40,10 +46,83 @@ export class NurseryComponent implements OnInit, OnDestroy {
   selectedSeed: string;
   selectedSuplement: string;
 
-  constructor(private route: ActivatedRoute, private router: Router, private service: ApiService) {
+  filter: string;
+
+  private _filterName: string;
+  get filterName(): string {
+    return this._filterName;
+  }
+  set filterName(val: string) {
+    this._filterName = val;
+    if (this.filter.valueOf() === 'name') {
+      this.filterByName();
+    }
+  }
+
+  private _filterProducer: string;
+  get filterProducer(): string {
+    return this._filterProducer;
+  }
+  set filterProducer(val: string) {
+    this._filterProducer = val;
+    if (this.filter.valueOf() === 'producer') {
+      this.filterByProducer();
+    }
+  }
+
+  private _filterNumber: number;
+  get filterNumber(): number {
+    return this._filterNumber;
+  }
+  set filterNumber(val: number) {
+    this._filterNumber = val;
+    if (this.filter.valueOf() === 'quantity') {
+      this.filterByQuantity();
+    }
+  }
+
+  private _sort: string;
+  get sort(): string {
+    return this._sort;
+  }
+  set sort(val: string) {
+    this._sort = val;
+
+    switch (val) {
+      case 'na':
+        this.avilabileSeedsFiltered = this.helper.sortByNameAsc(this.avilabileSeeds);
+        this.avilabileSuplementsFiltered = this.helper.sortByNameAsc(this.avilabileSuplements);
+        break;
+      case 'pa':
+        this.avilabileSeedsFiltered = this.helper.sortByProducerAsc(this.avilabileSeeds);
+        this.avilabileSuplementsFiltered = this.helper.sortByProducerAsc(this.avilabileSuplements);
+        break;
+      case 'qa':
+        this.avilabileSeedsFiltered = this.helper.sortByNumberAsc(this.avilabileSeeds);
+        this.avilabileSuplementsFiltered = this.helper.sortByNumberAsc(this.avilabileSuplements);
+        break;
+      case 'nd':
+        this.avilabileSeedsFiltered = this.helper.sortByNameDesc(this.avilabileSeeds);
+        this.avilabileSuplementsFiltered = this.helper.sortByNameDesc(this.avilabileSuplements);
+        break;
+      case 'pd':
+        this.avilabileSeedsFiltered = this.helper.sortByProducerDesc(this.avilabileSeeds);
+        this.avilabileSuplementsFiltered = this.helper.sortByProducerDesc(this.avilabileSuplements);
+        break;
+      case 'qd':
+        this.avilabileSeedsFiltered = this.helper.sortByNumberDesc(this.avilabileSeeds);
+        this.avilabileSuplementsFiltered = this.helper.sortByNumberDesc(this.avilabileSuplements);
+        break;
+      default:
+        break;
+    }
+  }
+
+  constructor(private route: ActivatedRoute, private router: Router, private service: ApiService, private helper: HelperService) {
     this.seedlings = new Array<Seedling>();
     this.fetching = true;
     this.nursery = new Nursery();
+    this.filter = 'name';
   }
 
   ngOnInit(): void {
@@ -90,21 +169,35 @@ export class NurseryComponent implements OnInit, OnDestroy {
 
   getWarehouse() {
     this.service.getWarehouse(this.id).subscribe(data => {
+      this.warehouseId = data._id;
       this.avilabileSuplements = [];
       this.avilabileSeeds = [];
-      this.waithingSeeds = [];
-      this.waithingProducts = [];
       data.seedlings.forEach(seed => {
         this.avilabileSeeds.push(seed);
       });
       data.products.forEach(prod => {
         this.avilabileSuplements.push(prod);
       });
-      data.waitingSeedlings.forEach(seed => {
-        this.waithingSeeds.push(seed);
-      });
-      data.waithingProducts.forEach(prod => {
-        this.waithingProducts.push(prod);
+      this.avilabileSeedsFiltered = this.avilabileSeeds;
+      this.avilabileSuplementsFiltered = this.avilabileSuplements;
+      this.getOrderRequests();
+    });
+  }
+
+  getOrderRequests() {
+    this.service.getOrderRequests(this.warehouseId).subscribe(data => {
+      this.orderRequests = [];
+      data.forEach(request => {
+        const order = {
+          companyId: request.companyId,
+          orderId: request._id,
+          name: request.name,
+          producer: request.producer,
+          type: request.type,
+          quantity: request.quantity,
+          status: request.status
+        }
+        this.orderRequests.push(order);
       });
     });
   }
@@ -236,14 +329,14 @@ export class NurseryComponent implements OnInit, OnDestroy {
   addSuplement() {
     let i = 0;
     this.addSuplementModal = false;
-    
-    const oldSeedling = Object(this.menagingSeedling);    
+
+    const oldSeedling = Object(this.menagingSeedling);
     this.avilabileSuplements.forEach(el => {
       if (this.selectedSuplement === el._id) {
         const index = i;
         this.menagingSeedling.progress = (this.menagingSeedling.progress + el.power) >= this.menagingSeedling.fullTime ? this.menagingSeedling.fullTime : this.menagingSeedling.progress + el.power;
         // id od seedling ce biti index u nizu i nece se menjati radi lakse manipulacije
-        this.service.updateSeedling(this.menagingSeedling, this.id).subscribe(res => {          
+        this.service.updateSeedling(this.menagingSeedling, this.id).subscribe(res => {
           el.quantity--;
           if (el.quantity === 0) {
             this.avilabileSuplements.splice(index, 1);
@@ -275,6 +368,30 @@ export class NurseryComponent implements OnInit, OnDestroy {
   }
 
   cancelOrder(order: any) {
+    this.service.cancelOrderRequests(order.orderId).subscribe(ress => {
+      this.modalTitle = 'Cancel Request';
+      this.modalContent = ress.message;
+      this.modal = true;
+      this.getOrderRequests();
+    }, err => {
+      this.modalTitle = 'Cancel Request';
+      this.modalContent = err.error.message;
+      this.modal = true;
+    })
+  }
 
+  filterByName() {
+    this.avilabileSeedsFiltered = this.helper.filterByName(this.filterName, this.avilabileSeeds);
+    this.avilabileSuplementsFiltered = this.helper.filterByName(this.filterName, this.avilabileSuplements);
+  }
+
+  filterByProducer() {
+    this.avilabileSeedsFiltered = this.helper.filterByProducer(this.filterProducer, this.avilabileSeeds);
+    this.avilabileSuplementsFiltered = this.helper.filterByProducer(this.filterProducer, this.avilabileSuplements);
+  }
+
+  filterByQuantity() {
+    this.avilabileSeedsFiltered = this.helper.filterByNumber(this.filterNumber, this.avilabileSeeds);
+    this.avilabileSuplementsFiltered = this.helper.filterByNumber(this.filterNumber, this.avilabileSuplements);
   }
 }

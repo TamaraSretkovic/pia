@@ -16,7 +16,7 @@
                 </p>
             </div>
             <div class="container" *ngIf="!fetching">
-                <h4 class="title">{{ nursery.name }}</h4>
+                <h4 class="title" [ngClass]="{'red': (nursery.water < 75) || (nursery.temp < 12)}">{{ nursery.name }}</h4>
                 <div class="userInfo">
                     <span class="userLabel">Amount of water</span>
                     <input type="number" min="0" step="1" class="userInput" [(ngModel)]="nursery.water" />
@@ -66,9 +66,106 @@
                 </p>
             </div>
             <div class="container" *ngIf="!fetching">
+                <h3 class="title">Warehouse</h3>
+                <clr-accordion>
+                    <clr-accordion-panel>
+                        <clr-accordion-title>Filter</clr-accordion-title>
+                        <clr-accordion-content *clrIfExpanded>
+
+                            <div class="clr-form-control">
+                                <label class="clr-control-label" style="margin-bottom: 15px;">Choose your filter</label>
+                                <div class="clr-control-container" style="display: block; width: 100%;">
+                                    <div class="clr-radio-wrapper radioWrapper">
+                                        <input type="radio" id="vertical-radio1" [(ngModel)]="filter" name="radio-full"
+                                            value="name" class="clr-radio">
+                                        <label for="vertical-radio1" class="clr-control-label">Filter by Name</label>
+                                    </div>
+                                    <div class="clr-input-wrapper inputWrapper"
+                                        [ngClass]="{'disabled': filter!=='name'}">
+                                        <input style="width: 200px;" type="text" id="basic" [(ngModel)]="filterName"
+                                            placeholder="Enter name here" class="clr-input">
+                                    </div>
+                                    <div class="clr-radio-wrapper radioWrapper">
+                                        <input type="radio" id="vertical-radio2" [(ngModel)]="filter" name="radio-full"
+                                            value="producer" class="clr-radio">
+                                        <label for="vertical-radio2" class="clr-control-label">Filter by
+                                            Producer</label>
+                                    </div>
+                                    <div class="clr-input-wrapper inputWrapper"
+                                        [ngClass]="{'disabled': filter!=='producer'}">
+                                        <input style="width: 200px;" type="text" id="basic" [(ngModel)]="filterProducer"
+                                            placeholder="Enter Producer name here" class="clr-input">
+                                    </div>
+                                    <div class="clr-radio-wrapper radioWrapper">
+                                        <input type="radio" id="vertical-radio3" [(ngModel)]="filter" name="radio-full"
+                                            value="quantity" class="clr-radio">
+                                        <label for="vertical-radio3" class="clr-control-label">Filter by
+                                            Quantity</label>
+                                    </div>
+                                    <div class="clr-input-wrapper inputWrapper"
+                                        [ngClass]="{'disabled': filter!=='quantity'}">
+                                        <input style="width: 200px;" type="number" step="1" id="basic"
+                                            [(ngModel)]="filterNumber" placeholder="Enter quantity value here"
+                                            class="clr-input">
+                                    </div>
+                                    <button type="submit" class="btn btn-icon buttonFilter" aria-label="home">
+                                        <clr-icon shape="filter"></clr-icon>
+                                    </button>
+                                </div>
+                            </div>
+
+
+                        </clr-accordion-content>
+                    </clr-accordion-panel>
+
+                    <clr-accordion-panel>
+                        <clr-accordion-title>Sort</clr-accordion-title>
+                        <clr-accordion-content *clrIfExpanded>
+
+                            <div class="clr-form-control">
+                                <label class="clr-control-label" style="margin-bottom: 15px;">Choose your sort</label>
+                                <div class="clr-control-container" style="display: block; width: 100%;">
+                                    <div class="clr-radio-wrapper">
+                                        <input type="radio" id="vertical-radio1" [(ngModel)]="sort" name="radio-full"
+                                            value="na" class="clr-radio">
+                                        <label for="vertical-radio1" class="clr-control-label">Sort by Name ASC</label>
+                                    </div>
+                                    <div class="clr-radio-wrapper">
+                                        <input type="radio" id="vertical-radio2" [(ngModel)]="sort" name="radio-full"
+                                            value="pa" class="clr-radio">
+                                        <label for="vertical-radio2" class="clr-control-label">Sort by Producer ASC</label>
+                                    </div>
+                                    <div class="clr-radio-wrapper">
+                                        <input type="radio" id="vertical-radio3" [(ngModel)]="sort" name="radio-full"
+                                            value="qa" class="clr-radio">
+                                        <label for="vertical-radio3" class="clr-control-label">Sort by Quantity ASC</label>
+                                    </div>
+                                    <div class="clr-radio-wrapper">
+                                        <input type="radio" id="vertical-radio4" [(ngModel)]="sort" name="radio-full"
+                                            value="nd" class="clr-radio">
+                                        <label for="vertical-radio4" class="clr-control-label">Sort by Name DESC</label>
+                                    </div>
+                                    <div class="clr-radio-wrapper">
+                                        <input type="radio" id="vertical-radio5" [(ngModel)]="sort" name="radio-full"
+                                            value="pd" class="clr-radio">
+                                        <label for="vertical-radio5" class="clr-control-label">Sort by Producer DESC</label>
+                                    </div>
+                                    <div class="clr-radio-wrapper">
+                                        <input type="radio" id="vertical-radio6" [(ngModel)]="sort" name="radio-full"
+                                            value="qd" class="clr-radio">
+                                        <label for="vertical-radio6" class="clr-control-label">Sort by Quantity DESC</label>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </clr-accordion-content>
+                    </clr-accordion-panel>
+                </clr-accordion>
                 <h3 class="title">Seedlings</h3>
-                <h4 class="title" *ngIf="avilabileSeeds.length === 0">No seedlings yet!</h4>
-                <div class="requestList" *ngFor="let seed of avilabileSeeds">
+                <h4 class="title" *ngIf="avilabileSeedsFiltered.length === 0">No seedlings!</h4>
+                <div class="requestList" *ngFor="let seed of avilabileSeedsFiltered">
                     <div class="userInfo">
                         <span class="userLabel">Seedling name</span>
                         <span class="userInput"> {{ seed.name }} </span>
@@ -83,8 +180,8 @@
                     </div>
                 </div>
                 <h3 class="title">Suplements</h3>
-                <h4 class="title" *ngIf="avilabileSuplements.length === 0">No suplements yet!</h4>
-                <div class="requestList" *ngFor="let suplement of avilabileSuplements">
+                <h4 class="title" *ngIf="avilabileSuplementsFiltered.length === 0">No suplements!</h4>
+                <div class="requestList" *ngFor="let suplement of avilabileSuplementsFiltered">
                     <div class="userInfo">
                         <span class="userLabel">Suplement name</span>
                         <span class="userInput"> {{ suplement.name }} </span>
@@ -99,41 +196,23 @@
                     </div>
                 </div>
                 <h3 class="title">Orders</h3>
-                <h4 class="title" *ngIf="waithingSeeds.length === 0 && waithingProducts.length === 0">No orders yet!</h4>
-                <div class="requestList" *ngFor="let seed of waithingSeeds">
+                <h4 class="title" *ngIf="orderRequests.length === 0">No orders yet!</h4>
+                <div class="requestList" *ngFor="let order of orderRequests">
                     <div class="userInfo">
                         <span class="userLabel">Order name</span>
-                        <span class="userInput"> {{ seed.name }} </span>
+                        <span class="userInput"> {{ order.name }} </span>
                     </div>
                     <div class="userInfo">
                         <span class="userLabel">Order producer </span>
-                        <span class="userInput"> {{ seed.producer }} </span>
+                        <span class="userInput"> {{ order.producer }} </span>
                     </div>
                     <div class="userInfo">
                         <span class="userLabel">Quantity</span>
-                        <span class="userInput"> {{ seed.quantity }} </span>
+                        <span class="userInput"> {{ order.quantity }} </span>
                     </div>
                     <div class="userInfo">
-                        <button type="submit" class="btn btn-block btn-md btn-danger button" (click)="cancelOrder(seed)">
-                            Cansel Order
-                        </button>
-                    </div>
-                </div>
-                <div class="requestList" *ngFor="let product of waithingProducts">
-                    <div class="userInfo">
-                        <span class="userLabel">Order name</span>
-                        <span class="userInput"> {{ product.name }} </span>
-                    </div>
-                    <div class="userInfo">
-                        <span class="userLabel">Order producer </span>
-                        <span class="userInput"> {{ product.producer }} </span>
-                    </div>
-                    <div class="userInfo">
-                        <span class="userLabel">Quantity</span>
-                        <span class="userInput"> {{ product.quantity }} </span>
-                    </div>
-                    <div class="userInfo">
-                        <button type="submit" class="btn btn-block btn-md btn-danger button" (click)="cancelOrder(product)">
+                        <button type="submit" class="btn btn-block btn-md btn-danger button"
+                            (click)="cancelOrder(order)">
                             Cansel Order
                         </button>
                     </div>
@@ -141,9 +220,25 @@
             </div>
         </clr-tab-content>
     </clr-tab>
+    <clr-tab>
+        <button clrTabLink>Online Store</button>
+        <clr-tab-content *clrIfActive>
+            <button class="btn btn-inverse btn-icon backBtn" (click)="back()">
+                <clr-icon shape="undo"></clr-icon>
+            </button>
+            <div class="container" *ngIf="fetching">
+                <p class="spinner spinner-lg" style="margin-left: 300px;">
+                    Loading...
+                </p>
+            </div>
+            <div class="container" *ngIf="!fetching">
+                <h3 class="title">Online Store</h3>
+
+            </div>
+        </clr-tab-content>
+    </clr-tab>
 </clr-tabs>
-
-
+<app-footer></app-footer>
 
 <clr-modal [(clrModalOpen)]="updateSeed">
     <h3 class="modal-title">{{ modalTitle }}</h3>

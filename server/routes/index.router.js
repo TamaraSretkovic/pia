@@ -5,6 +5,7 @@ const router = express.Router();
 const ctrlUser = require('../controllers/user.controller');
 const ctrlRegisterRequest = require('../controllers/registrationRequest.controller');
 const ctrlFarmer = require('../controllers/farmer.controller');
+const ctrlCompany = require('../controllers/company.controller');
 
 const jwtHelper = require('../config/jwtHelper');
 
@@ -36,7 +37,16 @@ router.post('/nursery', jwtHelper.verifyJwtToken, ctrlFarmer.addNursery);
 router.post('/updateSeedling', jwtHelper.verifyJwtToken, ctrlFarmer.updateSeedling);
 router.post('/updateNursery', jwtHelper.verifyJwtToken, ctrlFarmer.updateNursery);
 
-router.get('/warehouse/:nurseryId', ctrlFarmer.getWarehouse);
-router.post('/warehouse', ctrlFarmer.updateWarehouse);
+router.get('/warehouse/:nurseryId', jwtHelper.verifyJwtToken, ctrlFarmer.getWarehouse);
+router.post('/warehouse', jwtHelper.verifyJwtToken, ctrlFarmer.updateWarehouse);
+
+router.get('/orderRequests/:warehouseId', jwtHelper.verifyJwtToken, ctrlFarmer.getOrderRequests);
+router.delete('/orderRequests/:orderId', jwtHelper.verifyJwtToken, ctrlFarmer.calncelOrderRequest);
+router.post('/orderRequests', jwtHelper.verifyJwtToken, ctrlFarmer.addOrderRequest);
+
+// company
+
+router.get('/orders/:companyId', jwtHelper.verifyJwtToken, ctrlCompany.getOrders);
+
 
 module.exports = router;

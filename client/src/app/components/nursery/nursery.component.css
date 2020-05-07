@@ -10,10 +10,10 @@
     width: 600px;
     margin: auto;
     margin-top: 50px;
-    margin-left: 50px;
+    padding: 10px;
     background-color: white;
     box-shadow: 0 5px 15px rgba(0,0,0,.5);
-    height: 650px;
+    height: 600px;
     overflow-y: scroll;
 }
 
@@ -29,15 +29,6 @@ clr-tab-content, clr-tab {
 
 .backBtn:hover {
     background-color: #333333;
-}
-
-.container {
-    width: 700px;
-    margin: auto;
-    margin-top: 30px;
-    padding: 10px;
-    background-color: white;
-    box-shadow: 0 5px 15px rgba(0,0,0,.5);
 }
 
 .title {
@@ -172,4 +163,31 @@ clr-tab-content, clr-tab {
     height: 120px;
     margin-bottom: 10px;
     border-bottom: 1px solid black;
+}
+
+.radioWrapper {
+    float: left;
+    margin-bottom: 15px;
+    margin-right: 15px;
+    width: 30%;
+}
+
+.inputWrapper {
+    margin-bottom: 15px;
+    width: 60%;
+    float: left;
+}
+
+.buttonFilter{
+    float: right;
+    border-radius: 0;
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+.red {
+    background-color: hsl(9, 83%, 76%);
 }

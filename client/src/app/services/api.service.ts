@@ -22,6 +22,8 @@ export class ApiService {
     updateSeedlingUrl = '/v0.1/updateSeedling';
     saveNurseryChangesUrl = '/v0.1/updateNursery';
     warehouseUrl = '/v0.1/warehouse';
+    orderRequestUrl = '/v0.1/orderRequests';
+    ordersUrl = '/v0.1/orders';
 
     constructor(private router: Router, private http: HttpClient,
         private cookieService: CookieService) {
@@ -161,15 +163,30 @@ export class ApiService {
         return this.http.post<any>(`${this.baseUrl}${this.updateSeedlingUrl}`, { id: nurseryId, seedling: seedInfo });
     }
 
-    saveNurseryChanges(nurseryId: string, temp: number, water: number) {
+    saveNurseryChanges(nurseryId: string, temp: number, water: number): Observable<any> {
         return this.http.post<any>(`${this.baseUrl}${this.saveNurseryChangesUrl}`, { id: nurseryId, temp: temp, water: water });
     }
 
-    getWarehouse(nurseryId: string) {
+    // ***** warehouse stuff ****
+    getWarehouse(nurseryId: string): Observable<any> {
         return this.http.get<any>(`${this.baseUrl}${this.warehouseUrl}/${nurseryId}`);
     }
 
-    updateWarehouse(nurseryId: string, seedlings: Seedling[], products: Product[]) {
+    updateWarehouse(nurseryId: string, seedlings: Seedling[], products: Product[]): Observable<any> {
         return this.http.post<any>(`${this.baseUrl}${this.warehouseUrl}`, { id: nurseryId, seedlings: seedlings, products: products });
+    }
+
+    getOrderRequests(warehouseId: string): Observable<any> {
+        return this.http.get<any>(`${this.baseUrl}${this.orderRequestUrl}/${warehouseId}`);
+    }
+
+    cancelOrderRequests(orderId: string): Observable<any> {
+        return this.http.delete<any>(`${this.baseUrl}${this.orderRequestUrl}/${orderId}`);
+    }
+
+    // ****** company stuff *******
+
+    getOrders(companyId: string): Observable<any> {
+        return this.http.get<any>(`${this.baseUrl}${this.ordersUrl}/${companyId}`);
     }
 }

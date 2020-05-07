@@ -6,10 +6,7 @@ var warehouseShema = new mongoose.Schema({
         required: true
     },
     seedlings: [],
-    products: [],
-    waitingSeedlings: [],
-    waithingProducts: []
-
+    products: []
 });
 
 mongoose.model('Warehouse', warehouseShema, 'warehouses');

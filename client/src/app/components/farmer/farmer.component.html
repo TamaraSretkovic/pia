@@ -1,7 +1,7 @@
 <app-header></app-header>
 
 <div class="white"></div>
-<clr-tabs style="position: absolute;">
+<clr-tabs style="position: absolute;  width: 100%;">
     <clr-tab>
         <button clrTabLink id="link1">Nurserys</button>
         <clr-tab-content class="requestContainer" id="content1" *clrIfActive="true">
@@ -10,7 +10,7 @@
                     <h3 class="title">Nurserys</h3>
                     <h4 class="title" *ngIf="nurserys.length === 0">No farmer requests!</h4>
                     <div class="requestList" *ngFor="let nursery of nurserys">
-                        <h4 class="title"> {{ nursery.name }}</h4>
+                        <h4 class="title" [ngClass]="{'red': (nursery.water < 75) || (nursery.temp < 12)}"> {{ nursery.name }}</h4>
                         <div class="userInfo">
                             <span class="userLabel">Seedlings number</span>
                             <span class="userInput"> {{ nursery.seedlings }} </span>
@@ -74,6 +74,7 @@
         </clr-tab-content>
     </clr-tab>
 </clr-tabs>
+<app-footer></app-footer>
 
 <clr-modal [(clrModalOpen)]="modal">
     <h3 class="modal-title">{{ modalTitle }}</h3>

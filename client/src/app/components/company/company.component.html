@@ -1,6 +1,6 @@
 <app-header></app-header>
 <div class="white"></div>
-<clr-tabs style="position: absolute;">
+<clr-tabs style="position: absolute; width: 100%;">
     <clr-tab>
         <button clrTabLink id="link1">Order Requests</button>
         <clr-tab-content class="requestContainer" id="content1" *clrIfActive="true">
@@ -26,15 +26,9 @@
                             <span class="userInput"> {{ request.status }} </span>
                         </div>
                         <div class="userInfo">
-                            <span class="userLabel">Date</span>
-                            <span class="userInput"> {{ request.date }} </span>
-                        </div>
-                        <div class="userInfo">
                             <div class="btn-group btn-primary groupBtn">
-                                <button class="btn btn-success button"
-                                    (click)="acceptRequest(request)">Accept</button>
-                                <button class="btn btn-danger button"
-                                    (click)="deleteRequest(request)">Reject</button>
+                                <button class="btn btn-success button" (click)="acceptRequest(request)">Accept</button>
+                                <button class="btn btn-danger button" (click)="deleteRequest(request)">Reject</button>
                             </div>
                         </div>
                     </div>
@@ -104,6 +98,16 @@
                                 <input clrInput formControlName="description" />
                                 <clr-control-error *clrIfError="'required'">Description Required</clr-control-error>
                             </clr-input-container>
+                            <clr-input-container *ngIf="true">
+                                <label>Days to grow</label>
+                                <input clrInput type="number" formControlName="time" />
+                                <clr-control-error *clrIfError="'required'">Time Required</clr-control-error>
+                            </clr-input-container>
+                            <clr-input-container *ngIf="false">
+                                <label>Power of speeding up plant growing in days</label>
+                                <input clrInput type="number" formControlName="time" />
+                                <clr-control-error *clrIfError="'required'">Power Required</clr-control-error>
+                            </clr-input-container>
                             <button clrStepButton="next">next</button>
                         </clr-step-content>
                     </clr-stepper-panel>
@@ -114,7 +118,7 @@
                         <clr-step-content *clrIfExpanded>
                             <clr-input-container>
                                 <label>Quantity</label>
-                                <input clrInput formControlName="quantity" min="0"/>
+                                <input clrInput formControlName="quantity" min="0" />
                                 <clr-control-error *clrIfError="'required'">Quantity Required</clr-control-error>
                             </clr-input-container>
                             <button clrStepButton="submit">submit</button>
@@ -124,7 +128,14 @@
             </div>
         </clr-tab-content>
     </clr-tab>
+    <clr-tab>
+        <button clrTabLink id="link1">Business Results</button>
+        <clr-tab-content class="requestContainer" id="content1" *clrIfActive="true">
+        </clr-tab-content>
+    </clr-tab>
 </clr-tabs>
+<app-footer></app-footer>
+
 
 <clr-modal [(clrModalOpen)]="modal">
     <h3 class="modal-title">{{ modalTitle }}</h3>

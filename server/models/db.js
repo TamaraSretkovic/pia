@@ -18,3 +18,4 @@ require('./seedling.model');
 require('./nursery.model');
 require('./product.model');
 require('./warehous.model');
+require('./orderRequest.model');

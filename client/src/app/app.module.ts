@@ -18,6 +18,7 @@ import { CompanyComponent } from './components/company/company.component';
 import { FarmerComponent } from './components/farmer/farmer.component';
 import { NurseryComponent } from './components/nursery/nursery.component';
 import { WarehouseComponent } from './components/warehouse/warehouse.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { WarehouseComponent } from './components/warehouse/warehouse.component';
     CompanyComponent,
     FarmerComponent,
     NurseryComponent,
-    WarehouseComponent
+    WarehouseComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,

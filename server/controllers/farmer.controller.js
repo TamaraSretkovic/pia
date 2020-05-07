@@ -5,6 +5,7 @@ const Nursery = mongoose.model('Nursery');
 const Seedling = mongoose.model('Seedling');
 const Warehouse = mongoose.model('Warehouse');
 const Product = mongoose.model('Product');
+const OrderRequest = mongoose.model('OrderRequest');
 
 module.exports.getNurserys = (req, res, next) => {
     Nursery.find({ farmerId: req.body.id }).then(result => {
@@ -160,3 +161,54 @@ module.exports.updateWarehouse = (req, res, next) => {
             res.status(400).json({ message: err });
         });
 };
+
+module.exports.getOrderRequests = (req, res, next) => {
+
+    OrderRequest.find({ warehouseId: req.params.warehouseId }).then(doc => {
+        res.status(200).send(doc);
+    }).catch(err => {
+        console.log("error u get orderRequests");
+        res.status(400).json({ message: err });
+    });
+}
+
+module.exports.calncelOrderRequest = (req, res, next) => {
+    OrderRequest.findOne({_id: req.params.orderId})
+    .then(doc => {
+        if(doc.status.valueOf()=== new String("pending").valueOf()){
+            OrderRequest.deleteOne({_id: req.params.orderId}).then(succsess => {
+                res.status(200).json({ message: "Order successfully canceled!" });
+            }).catch(err => {
+                console.log("error u cancelRequest delete");
+                res.status(400).json({ message: err });
+            });
+        } else {
+            res.status(400).json({ message: "Order is delivering, please wait!" });
+        }
+    })
+        .catch(err => {
+            console.log("error u cancelRequest find");
+            res.status(400).json({ message: err });
+        });
+}
+
+module.exports.addOrderRequest = (req, res, next) => {
+    var order = new OrderRequest();
+    order.warehouseId = req.body.warehouseId;
+    order.companyId = req.body.companyId;
+    order.orderId = req.body.orderId;
+    order.producer = req.body.producer;
+    order.type = req.body.type;
+    order.name = req.body.name;
+    order.quantity = req.body.quantity;
+    order.status = "pending";
+
+    order.save((err, doc) => {
+        if (!err)
+            res.send({ message: 'Successfully added new order Request!' });
+        else {
+            console.log("error u add order requests");
+            res.status(400).json({ message: err });
+        }
+    })
+}
