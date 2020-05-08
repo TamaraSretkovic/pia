@@ -5,26 +5,108 @@
         <button clrTabLink id="link1">Order Requests</button>
         <clr-tab-content class="requestContainer" id="content1" *clrIfActive="true">
             <div class="container">
+                <clr-accordion>
+                    <clr-accordion-panel>
+                        <clr-accordion-title>Sort</clr-accordion-title>
+                        <clr-accordion-content *clrIfExpanded>
+                            <div class="clr-form-control">
+                                <label class="clr-control-label" style="margin-bottom: 15px;">Choose your
+                                    sort</label>
+                                <div class="clr-control-container" style="display: block; width: 100%;">
+                                    <div class="clr-radio-wrapper">
+                                        <input type="radio" id="vertical-radio1" [(ngModel)]="sort"
+                                            name="radio-full" value="asc" class="clr-radio">
+                                        <label for="vertical-radio1" class="clr-control-label">Sort by Date
+                                            ASC</label>
+                                    </div>
+                                    <div class="clr-radio-wrapper">
+                                        <input type="radio" id="vertical-radio2" [(ngModel)]="sort"
+                                            name="radio-full" value="dsc" class="clr-radio">
+                                        <label for="vertical-radio2" class="clr-control-label">Sort by Date
+                                            DESC</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </clr-accordion-content>
+                    </clr-accordion-panel>
+                </clr-accordion>
+                <div class="farmerR importantR" *ngIf="iRequests.length !== 0">
+                    <h3 class="title">Important Requests</h3>
+                    <div class="requestList" *ngFor="let request of iRequestsSorted">
+                        <div style="width: 100%; height: 130px;">
+                            <div class="userInfo">
+                                <span class="userLabel">Farmer Username</span>
+                                <span class="userInput"> {{ request.farmerUsername }} </span>
+                            </div>
+                            <div class="userInfo">
+                                <span class="userLabel">Status</span>
+                                <span class="userInput"> {{ request.status }} </span>
+                            </div>
+                            <div class="userInfo">
+                                <span class="userLabel">Date</span>
+                                <span class="userInput"> {{request.date | date:'shortDate'}} </span>
+                            </div>
+                        </div>
+                        <clr-accordion>
+                            <clr-accordion-panel>
+                                <clr-accordion-title>Products</clr-accordion-title>
+                                <clr-accordion-content *clrIfExpanded>
+                                    <div class="requestList productList" *ngFor="let product of request.products">
+                                        <div class="userInfo">
+                                            <span class="userLabel">Name</span>
+                                            <span class="userInput"> {{ product.name }} </span>
+                                        </div>
+                                        <div class="userInfo">
+                                            <span class="userLabel">Quantity</span>
+                                            <span class="userInput"> {{ product.quantity }} </span>
+                                        </div>
+                                    </div>
+                                </clr-accordion-content>
+                            </clr-accordion-panel>
+                        </clr-accordion>
+                        <div class="userInfo">
+                            <div class="btn-group btn-primary groupBtn">
+                                <button class="btn btn-success button" (click)="acceptRequest(request)">Accept</button>
+                                <button class="btn btn-danger button" (click)="deleteRequest(request)">Reject</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="farmerR">
                     <h3 class="title">Order Requests</h3>
                     <h4 class="title" *ngIf="oRequests.length === 0">No order requests!</h4>
-                    <div class="requestList" *ngFor="let request of oRequests">
-                        <div class="userInfo">
-                            <span class="userLabel">Name</span>
-                            <span class="userInput"> {{ request.name }} </span>
+                    <div class="requestList" *ngFor="let request of oRequestsSorted">
+                        <div style="width: 100%; height: 130px;">
+                            <div class="userInfo">
+                                <span class="userLabel">Farmer Username</span>
+                                <span class="userInput"> {{ request.farmerUsername }} </span>
+                            </div>
+                            <div class="userInfo">
+                                <span class="userLabel">Status</span>
+                                <span class="userInput"> {{ request.status }} </span>
+                            </div>
+                            <div class="userInfo">
+                                <span class="userLabel">Date</span>
+                                <span class="userInput"> {{request.date | date:'shortDate'}} </span>
+                            </div>
                         </div>
-                        <div class="userInfo">
-                            <span class="userLabel">Quantity</span>
-                            <span class="userInput"> {{ request.quantity }} </span>
-                        </div>
-                        <div class="userInfo">
-                            <span class="companyLabel">Username</span>
-                            <span class="userInput"> {{ request.username }} </span>
-                        </div>
-                        <div class="userInfo">
-                            <span class="userLabel">Status</span>
-                            <span class="userInput"> {{ request.status }} </span>
-                        </div>
+                        <clr-accordion>
+                            <clr-accordion-panel>
+                                <clr-accordion-title>Products</clr-accordion-title>
+                                <clr-accordion-content *clrIfExpanded>
+                                    <div class="requestList productList" *ngFor="let product of request.products">
+                                        <div class="userInfo">
+                                            <span class="userLabel">Name</span>
+                                            <span class="userInput"> {{ product.name }} </span>
+                                        </div>
+                                        <div class="userInfo">
+                                            <span class="userLabel">Quantity</span>
+                                            <span class="userInput"> {{ product.quantity }} </span>
+                                        </div>
+                                    </div>
+                                </clr-accordion-content>
+                            </clr-accordion-panel>
+                        </clr-accordion>
                         <div class="userInfo">
                             <div class="btn-group btn-primary groupBtn">
                                 <button class="btn btn-success button" (click)="acceptRequest(request)">Accept</button>
@@ -49,12 +131,26 @@
                             <span class="userInput"> {{ product.name }} </span>
                         </div>
                         <div class="userInfo">
+                            <span class="userLabel">Type</span>
+                            <span class="userInput"> {{ product.type }} </span>
+                        </div>
+                        <div class="userInfo">
                             <span class="userLabel">Quantity</span>
-                            <span class="userInput"> {{ product.quantity }} </span>
+                            <input type="number" step="1" min="0" class="userInput" [(ngModel)]="product.quantity" />
+                        </div>
+                        <div class="userInfo">
+                            <span class="userLabel">Price [$]</span>
+                            <input type="number" step="1" min="0" class="userInput" [(ngModel)]="product.price" />
+                        </div>
+                        <div class="userInfo">
+                            <span class="userLabel">Descrtiption</span>
+                            <input type="text" class="userInput" [(ngModel)]="product.description" />
                         </div>
                         <div class="userInfo">
                             <div class="btn-group btn-primary groupBtn">
+                                <button class="btn btn-primary button" (click)="updateProduct(product)">Save</button>
                                 <button class="btn btn-success button" (click)="info(product)">Info</button>
+                                <button class="btn btn-danger button" (click)="delete(product)">Delete</button>
                             </div>
                         </div>
                     </div>
@@ -65,8 +161,8 @@
     <clr-tab>
         <button clrTabLink>Add Product</button>
         <clr-tab-content *clrIfActive>
-            <div style="margin-left: 50px; margin-top: 50px;">
-                <form clrStepper [formGroup]="form" (ngSubmit)="submit()">
+            <div style="margin: auto; margin-top: 50px; width: 50%;">
+                <form clrStepper [formGroup]="form" (ngSubmit)="addProduct()">
                     <clr-stepper-panel formGroupName="name">
                         <clr-step-title>Name</clr-step-title>
                         <clr-step-description>Name new product.</clr-step-description>
@@ -79,9 +175,9 @@
 
                             <clr-select-container>
                                 <label>Type</label>
-                                <select clrSelect name="options" formControlName="type">
-                                    <option value="true">plant</option>
-                                    <option value="false">preparation</option>
+                                <select clrSelect name="options" formControlName="type" [(ngModel)]="type">
+                                    <option value="seed">plant</option>
+                                    <option value="product">preparation</option>
                                 </select>
                                 <clr-control-error *clrIfError="'required'">Type Required</clr-control-error>
                             </clr-select-container>
@@ -98,14 +194,14 @@
                                 <input clrInput formControlName="description" />
                                 <clr-control-error *clrIfError="'required'">Description Required</clr-control-error>
                             </clr-input-container>
-                            <clr-input-container *ngIf="true">
+                            <clr-input-container *ngIf="type==='seed'">
                                 <label>Days to grow</label>
-                                <input clrInput type="number" formControlName="time" />
+                                <input clrInput type="number" formControlName="power" />
                                 <clr-control-error *clrIfError="'required'">Time Required</clr-control-error>
                             </clr-input-container>
-                            <clr-input-container *ngIf="false">
+                            <clr-input-container *ngIf="type==='product'">
                                 <label>Power of speeding up plant growing in days</label>
-                                <input clrInput type="number" formControlName="time" />
+                                <input clrInput type="number" formControlName="power" />
                                 <clr-control-error *clrIfError="'required'">Power Required</clr-control-error>
                             </clr-input-container>
                             <button clrStepButton="next">next</button>
@@ -121,6 +217,12 @@
                                 <input clrInput formControlName="quantity" min="0" />
                                 <clr-control-error *clrIfError="'required'">Quantity Required</clr-control-error>
                             </clr-input-container>
+
+                            <clr-input-container>
+                                <label>Price [$]</label>
+                                <input clrInput formControlName="price" />
+                                <clr-control-error *clrIfError="'required'">Price Required</clr-control-error>
+                            </clr-input-container>
                             <button clrStepButton="submit">submit</button>
                         </clr-step-content>
                     </clr-stepper-panel>
@@ -129,8 +231,13 @@
         </clr-tab-content>
     </clr-tab>
     <clr-tab>
-        <button clrTabLink id="link1">Business Results</button>
-        <clr-tab-content class="requestContainer" id="content1" *clrIfActive="true">
+        <button clrTabLink>Business Results</button>
+        <clr-tab-content *clrIfActive>
+            <div class="chartContainer">
+                <canvas id="myChart">
+                    
+                </canvas>
+            </div>
         </clr-tab-content>
     </clr-tab>
 </clr-tabs>
@@ -154,6 +261,6 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="cancel()">Cancel</button>
-        <button type="button" class="btn btn-danger" (click)="delete()">Delete</button>
+        <button type="button" class="btn btn-danger" (click)="deleteProduct()">Delete</button>
     </div>
 </clr-modal>

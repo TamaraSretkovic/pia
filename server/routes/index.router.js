@@ -42,11 +42,20 @@ router.post('/warehouse', jwtHelper.verifyJwtToken, ctrlFarmer.updateWarehouse);
 
 router.get('/orderRequests/:warehouseId', jwtHelper.verifyJwtToken, ctrlFarmer.getOrderRequests);
 router.delete('/orderRequests/:orderId', jwtHelper.verifyJwtToken, ctrlFarmer.calncelOrderRequest);
-router.post('/orderRequests', jwtHelper.verifyJwtToken, ctrlFarmer.addOrderRequest);
+router.post('/orderRequests', ctrlFarmer.addOrderRequest);
 
 // company
+router.get('/orders/:companyId', ctrlCompany.getOrders);
+router.delete('/orders/:orderId', ctrlCompany.rejectOrder);
+router.post('/orders', ctrlCompany.acceptOrder);
 
-router.get('/orders/:companyId', jwtHelper.verifyJwtToken, ctrlCompany.getOrders);
+router.post('/products', ctrlCompany.addProduct);
+
+router.get('/products/:companyId', ctrlCompany.getProducts);
+router.post('/products/:productId', ctrlCompany.updateProduct);
+router.delete('/products/:productId', ctrlCompany.deleteProduct);
+
+
 
 
 module.exports = router;

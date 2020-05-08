@@ -16,6 +16,9 @@ module.exports.register = (req, res, next) => {
     user.place = req.body.place;
     user.phone = req.body.phone;
     user.userType = req.body.userType;
+    if(userType === 'company') {
+        user.courier = 5;
+    }
     user.save((err, doc) => {
         if (!err) {
             if (req.body.id !== undefined) {

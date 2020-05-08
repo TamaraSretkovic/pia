@@ -24,6 +24,7 @@ export class ApiService {
     warehouseUrl = '/v0.1/warehouse';
     orderRequestUrl = '/v0.1/orderRequests';
     ordersUrl = '/v0.1/orders';
+    productsUrl = '/v0.1/products';
 
     constructor(private router: Router, private http: HttpClient,
         private cookieService: CookieService) {
@@ -189,4 +190,42 @@ export class ApiService {
     getOrders(companyId: string): Observable<any> {
         return this.http.get<any>(`${this.baseUrl}${this.ordersUrl}/${companyId}`);
     }
+
+    rejectOrder(orderId: string): Observable<any> {
+        return this.http.delete<any>(`${this.baseUrl}${this.ordersUrl}/${orderId}`);
+    }
+
+    acceptOrder(orderId: string): Observable<any> {
+        return this.http.post<any>(`${this.baseUrl}${this.ordersUrl}`, orderId);
+    }
+
+    // ***** manage products *****
+
+    getProducts(companyId: string): Observable<any> {
+        return this.http.get<any>(`${this.baseUrl}${this.productsUrl}/${companyId}`);
+    }
+
+    deleteProduct(productId: string): Observable<any> {
+        return this.http.delete<any>(`${this.baseUrl}${this.productsUrl}/${productId}`);
+    }
+
+    updateProduct(productId: string, description: string, quantity: number, price: number): Observable<any> {
+        return this.http.post<any>(`${this.baseUrl}${this.productsUrl}/${productId}`,
+            { quantity: quantity, description: description, price: price });
+    }
+
+    addProduct(productInfo: any): Observable<any> {
+        const product = {
+            name: productInfo.name,
+            producer: this.getUsername(),
+            quantity: productInfo.quantity,
+            type: productInfo.type,
+            price: productInfo.price,
+            companyId: this.getId(),
+            power: productInfo.power,
+            description: productInfo.description
+        }
+        return this.http.post<any>(`${this.baseUrl}${this.productsUrl}`, product);
+    }
+
 }

@@ -18,11 +18,11 @@
             <div class="container" *ngIf="!fetching">
                 <h4 class="title" [ngClass]="{'red': (nursery.water < 75) || (nursery.temp < 12)}">{{ nursery.name }}</h4>
                 <div class="userInfo">
-                    <span class="userLabel">Amount of water</span>
+                    <span class="userLabel">Amount of water [L]</span>
                     <input type="number" min="0" step="1" class="userInput" [(ngModel)]="nursery.water" />
                 </div>
                 <div class="userInfo">
-                    <span class="userLabel">Temperature</span>
+                    <span class="userLabel">Temperature [°C]</span>
                     <input type="number" step="1" class="userInput" [(ngModel)]="nursery.temp" />
                 </div>
                 <div class="userInfo">

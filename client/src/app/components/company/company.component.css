@@ -24,6 +24,10 @@ clr-tab-content, clr-tab {
     margin-bottom: 10px;
 }
 
+.importantR {
+    background-color: cornsilk;
+}
+
 .companyR {
     margin-bottom: 10px;
 }
@@ -98,6 +102,9 @@ clr-tab-content, clr-tab {
     border-bottom: 1px solid black;
 }
 
+.productList {
+    height: 90px;
+}
 .groupBtn {
     width: 100%;
     margin-bottom: 10px;
@@ -106,4 +113,14 @@ clr-tab-content, clr-tab {
 .button {
     width: 50%;
     border-radius: 0;
+}
+
+.chartContainer {
+    width: 700px;
+    margin: auto;
+    margin-top: 50px;
+    background-color: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,.5);
+    height: 600px;
+    display: block;
 }

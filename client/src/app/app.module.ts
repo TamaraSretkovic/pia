@@ -17,7 +17,6 @@ import { HeaderComponent } from './components/header/header.component';
 import { CompanyComponent } from './components/company/company.component';
 import { FarmerComponent } from './components/farmer/farmer.component';
 import { NurseryComponent } from './components/nursery/nursery.component';
-import { WarehouseComponent } from './components/warehouse/warehouse.component';
 import { FooterComponent } from './components/footer/footer.component';
 
 @NgModule({
@@ -30,7 +29,6 @@ import { FooterComponent } from './components/footer/footer.component';
     CompanyComponent,
     FarmerComponent,
     NurseryComponent,
-    WarehouseComponent,
     FooterComponent
   ],
   imports: [

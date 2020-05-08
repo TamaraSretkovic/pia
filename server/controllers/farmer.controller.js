@@ -2,10 +2,11 @@ const mongoose = require('mongoose');
 const _ = require('lodash');
 
 const Nursery = mongoose.model('Nursery');
-const Seedling = mongoose.model('Seedling');
+const Seedling = mongoose.model('FarmerSeedling');
 const Warehouse = mongoose.model('Warehouse');
 const Product = mongoose.model('Product');
 const OrderRequest = mongoose.model('OrderRequest');
+const OrderProduct = mongoose.model('OrderProduct');
 
 module.exports.getNurserys = (req, res, next) => {
     Nursery.find({ farmerId: req.body.id }).then(result => {
@@ -42,7 +43,7 @@ module.exports.addNursery = (req, res, next) => {
         seedling.name = '';
         seedling.producer = '';
         seedling.fullTime = '';
-        seedling.progress = '';
+        seedling.progress = 0;
         seedling.status = 'empty';
         nursery.seedlings.push(seedling);
     };
@@ -196,12 +197,21 @@ module.exports.addOrderRequest = (req, res, next) => {
     var order = new OrderRequest();
     order.warehouseId = req.body.warehouseId;
     order.companyId = req.body.companyId;
-    order.orderId = req.body.orderId;
     order.producer = req.body.producer;
-    order.type = req.body.type;
-    order.name = req.body.name;
-    order.quantity = req.body.quantity;
     order.status = "pending";
+    order.date = new Date();
+    order.farmerUsername = req.body.username;
+    order.products = [];
+
+    req.body.products.forEach(product => {
+        var newProduct = new OrderProduct();
+        newProduct.productId = product.productId;
+        newProduct.name = product.name;
+        newProduct.type = product.type;
+        newProduct.quantity = product.quantity;
+
+        order.products.push(product);
+    });
 
     order.save((err, doc) => {
         if (!err)

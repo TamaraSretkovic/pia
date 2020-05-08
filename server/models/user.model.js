@@ -35,6 +35,9 @@ var userSchema = new mongoose.Schema({
         type: String,
         required: 'User type can\'t be empty'
     },
+    courier: {
+        type: Number
+    },
     saltSecret: String
 });
 

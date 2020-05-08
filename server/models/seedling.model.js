@@ -21,6 +21,6 @@ var seedling = new mongoose.Schema({
     }
 });
 
-mongoose.model('Seedling', seedling, 'seedlings');
+mongoose.model('FarmerSeedling', seedling, 'farmerSeedlings');
 
 

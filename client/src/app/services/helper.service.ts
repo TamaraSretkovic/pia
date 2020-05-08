@@ -40,6 +40,12 @@ export class HelperService {
         });
     }
 
+    sortByDateDesc(array: any[]): any[]{
+        return array.sort((s1, s2) => {
+            return <any>new Date(s2.date) - <any>new Date(s1.date);
+        });
+    }
+
     sortByNameAsc(array: any[]): any[]{
         return array.sort((s1, s2) => {
             if (s1.name > s2.name) { return 1; }
@@ -59,6 +65,12 @@ export class HelperService {
     sortByNumberAsc(array: any[]): any[]{
         return array.sort((s1, s2) => {
             return s1.quantity - s2.quantity;
+        });
+    }
+
+    sortByDateAsc(array: any[]): any[]{
+        return array.sort((s1, s2) => {
+            return <any>new Date(s1.date) - <any>new Date(s2.date);
         });
     }
 }

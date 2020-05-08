@@ -19,3 +19,5 @@ require('./nursery.model');
 require('./product.model');
 require('./warehous.model');
 require('./orderRequest.model');
+require('./orderRequest.model');
+require('./companyProduct.model');

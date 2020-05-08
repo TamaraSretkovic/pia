@@ -3,20 +3,30 @@ const mongoose = require('mongoose');
 var orderRequestShema = new mongoose.Schema({
     warehouseId: {
         type: String,
-        required: true
+    },
+    farmerUsername: {
+        type: String,
     },
     companyId: {
-        type: String,
-        required: true
-    },
-    orderId: {
-        type: String,
-        required: true
-    },
-    name: {
         type: String
     },
     producer: {
+        type: String
+    },
+    products: [],
+    date: {
+        type: Date
+    },
+    status: {
+        type: String
+    }
+});
+
+var orderProductsShema = new mongoose.Schema({
+    productId: {
+        type: String
+    },
+    name: {
         type: String
     },
     type: {
@@ -24,10 +34,8 @@ var orderRequestShema = new mongoose.Schema({
     },
     quantity: {
         type: Number
-    },
-    status : {
-        type: String
     }
 });
 
 mongoose.model('OrderRequest', orderRequestShema, 'orderRequests');
+mongoose.model('OrderProduct', orderRequestShema, 'orderProducts');
