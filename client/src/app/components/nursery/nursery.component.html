@@ -16,7 +16,8 @@
                 </p>
             </div>
             <div class="container" *ngIf="!fetching">
-                <h4 class="title" [ngClass]="{'red': (nursery.water < 75) || (nursery.temp < 12)}">{{ nursery.name }}</h4>
+                <h4 class="title" [ngClass]="{'red': (nursery.water < 75) || (nursery.temp < 12)}">{{ nursery.name }}
+                </h4>
                 <div class="userInfo">
                     <span class="userLabel">Amount of water [L]</span>
                     <input type="number" min="0" step="1" class="userInput" [(ngModel)]="nursery.water" />
@@ -71,7 +72,6 @@
                     <clr-accordion-panel>
                         <clr-accordion-title>Filter</clr-accordion-title>
                         <clr-accordion-content *clrIfExpanded>
-
                             <div class="clr-form-control">
                                 <label class="clr-control-label" style="margin-bottom: 15px;">Choose your filter</label>
                                 <div class="clr-control-container" style="display: block; width: 100%;">
@@ -113,8 +113,6 @@
                                     </button>
                                 </div>
                             </div>
-
-
                         </clr-accordion-content>
                     </clr-accordion-panel>
 
@@ -133,12 +131,14 @@
                                     <div class="clr-radio-wrapper">
                                         <input type="radio" id="vertical-radio2" [(ngModel)]="sort" name="radio-full"
                                             value="pa" class="clr-radio">
-                                        <label for="vertical-radio2" class="clr-control-label">Sort by Producer ASC</label>
+                                        <label for="vertical-radio2" class="clr-control-label">Sort by Producer
+                                            ASC</label>
                                     </div>
                                     <div class="clr-radio-wrapper">
                                         <input type="radio" id="vertical-radio3" [(ngModel)]="sort" name="radio-full"
                                             value="qa" class="clr-radio">
-                                        <label for="vertical-radio3" class="clr-control-label">Sort by Quantity ASC</label>
+                                        <label for="vertical-radio3" class="clr-control-label">Sort by Quantity
+                                            ASC</label>
                                     </div>
                                     <div class="clr-radio-wrapper">
                                         <input type="radio" id="vertical-radio4" [(ngModel)]="sort" name="radio-full"
@@ -148,17 +148,17 @@
                                     <div class="clr-radio-wrapper">
                                         <input type="radio" id="vertical-radio5" [(ngModel)]="sort" name="radio-full"
                                             value="pd" class="clr-radio">
-                                        <label for="vertical-radio5" class="clr-control-label">Sort by Producer DESC</label>
+                                        <label for="vertical-radio5" class="clr-control-label">Sort by Producer
+                                            DESC</label>
                                     </div>
                                     <div class="clr-radio-wrapper">
                                         <input type="radio" id="vertical-radio6" [(ngModel)]="sort" name="radio-full"
                                             value="qd" class="clr-radio">
-                                        <label for="vertical-radio6" class="clr-control-label">Sort by Quantity DESC</label>
+                                        <label for="vertical-radio6" class="clr-control-label">Sort by Quantity
+                                            DESC</label>
                                     </div>
                                 </div>
                             </div>
-
-
 
                         </clr-accordion-content>
                     </clr-accordion-panel>
@@ -197,19 +197,28 @@
                 </div>
                 <h3 class="title">Orders</h3>
                 <h4 class="title" *ngIf="orderRequests.length === 0">No orders yet!</h4>
-                <div class="requestList" *ngFor="let order of orderRequests">
-                    <div class="userInfo">
-                        <span class="userLabel">Order name</span>
-                        <span class="userInput"> {{ order.name }} </span>
-                    </div>
+                <div class="orderList" *ngFor="let order of orderRequests">
                     <div class="userInfo">
                         <span class="userLabel">Order producer </span>
                         <span class="userInput"> {{ order.producer }} </span>
                     </div>
-                    <div class="userInfo">
-                        <span class="userLabel">Quantity</span>
-                        <span class="userInput"> {{ order.quantity }} </span>
-                    </div>
+                    <clr-accordion>
+                        <clr-accordion-panel>
+                            <clr-accordion-title>Products</clr-accordion-title>
+                            <clr-accordion-content *clrIfExpanded>
+                                <div class="requestList productList" *ngFor="let product of order.products">
+                                    <div class="userInfo">
+                                        <span class="userLabel">Name</span>
+                                        <span class="userInput"> {{ product.name }} </span>
+                                    </div>
+                                    <div class="userInfo">
+                                        <span class="userLabel">Quantity</span>
+                                        <span class="userInput"> {{ product.quantity }} </span>
+                                    </div>
+                                </div>
+                            </clr-accordion-content>
+                        </clr-accordion-panel>
+                    </clr-accordion>
                     <div class="userInfo">
                         <button type="submit" class="btn btn-block btn-md btn-danger button"
                             (click)="cancelOrder(order)">
@@ -226,6 +235,9 @@
             <button class="btn btn-inverse btn-icon backBtn" (click)="back()">
                 <clr-icon shape="undo"></clr-icon>
             </button>
+            <button class="btn btn-inverse btn-icon backBtn" (click)="basketModal=true">
+                <clr-icon shape="shopping-bag"></clr-icon>
+            </button>
             <div class="container" *ngIf="fetching">
                 <p class="spinner spinner-lg" style="margin-left: 300px;">
                     Loading...
@@ -233,7 +245,32 @@
             </div>
             <div class="container" *ngIf="!fetching">
                 <h3 class="title">Online Store</h3>
-
+                <h4 class="title" *ngIf="companyProductsFiltered.length === 0">No seedlings!</h4>
+                <div class="allProductsList" *ngFor="let product of companyProductsFiltered"
+                    [ngClass]="{'seedling': product.type === 'seed', 'product': product.type === 'product'}">
+                    <div class="userInfo">
+                        <span class="userLabel">Product name</span>
+                        <span class="userInput"> {{ product.name }} </span>
+                    </div>
+                    <div class="userInfo">
+                        <span class="userLabel">Product producer </span>
+                        <span class="userInput"> {{ product.producer }} </span>
+                    </div>
+                    <div class="userInfo">
+                        <span class="userLabel">Quantity in stock </span>
+                        <span class="userInput"> {{ product.quantity }} </span>
+                    </div>
+                    <div class="userInfo">
+                        <span class="userLabel">Price per product price [$]</span>
+                        <span class="userInput"> {{ product.price }} </span>
+                    </div>
+                    <div class="userInfo">
+                        <div class="btn-group btn-primary groupBtn" style="width: 100%;">
+                            <button class="btn btn-primary button" style="width: 50%;" (click)="info(product)">Info</button>
+                            <button class="btn btn-success button" style="width: 50%;" (click)="enterQuantity(product)">Add to custumer basket</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </clr-tab-content>
     </clr-tab>
@@ -288,5 +325,58 @@
     <div class="modal-body"> {{ modalContent }} </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="modal=false">Ok</button>
+    </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="orderingModal">
+    <h3 class="modal-title">Add To Basket</h3>
+    <div class="modal-body">
+        <clr-input-container>
+            <label>Enter the quantity of ordering product/seedling</label>
+            <input clrInput type="number" min="1" [max]="orderingProduct?.quantity" name="name" [(ngModel)]="quantity" />
+        </clr-input-container>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="addToBasket()">Add</button>
+        <button type="button" class="btn btn-danger" (click)="cancel()">Cancel</button>
+    </div>
+</clr-modal>
+
+
+<clr-modal [(clrModalOpen)]="basketModal">
+    <h3 class="modal-title">Custumer Basket</h3>
+    <div class="modal-body">
+       
+        <div class="basketContainer">
+            <h3 class="title">Order List</h3>
+            <h4 class="title" *ngIf="basket.length === 0">Nothing in the basket!</h4>
+            <div class="allProductsList" *ngFor="let product of basket; let i = index" [attr.data-index]="i"
+                [ngClass]="{'seedling': product.type === 'seed', 'product': product.type === 'product'}">
+                <div class="userInfo">
+                    <span class="userLabel">Product name</span>
+                    <span class="userInput"> {{ product.name }} </span>
+                </div>
+                <div class="userInfo">
+                    <span class="userLabel">Product producer </span>
+                    <span class="userInput"> {{ product.producer }} </span>
+                </div>
+                <div class="userInfo">
+                    <span class="userLabel">Quantity in stock </span>
+                    <span class="userInput"> {{ product.quantity }} </span>
+                </div>
+                <div class="userInfo">
+                    <span class="userLabel">Total price [$]</span>
+                    <span class="userInput"> {{ product.price * product.quantity }} </span>
+                </div>
+                <div class="userInfo">
+                    <button class="btn btn-danger button" style="margin-left: 52px;" (click)="deleteFromBasket(i)">Delete from basket</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-success" (click)="order()">Order</button>
+        <button type="button" class="btn btn-danger" (click)="cancelOrdering()">Cancel Order</button>
     </div>
 </clr-modal>

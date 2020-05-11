@@ -38,4 +38,4 @@ var orderProductsShema = new mongoose.Schema({
 });
 
 mongoose.model('OrderRequest', orderRequestShema, 'orderRequests');
-mongoose.model('OrderProduct', orderRequestShema, 'orderProducts');
+mongoose.model('OrderProduct', orderProductsShema, 'orderProducts');

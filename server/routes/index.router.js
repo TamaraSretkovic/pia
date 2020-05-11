@@ -40,20 +40,24 @@ router.post('/updateNursery', jwtHelper.verifyJwtToken, ctrlFarmer.updateNursery
 router.get('/warehouse/:nurseryId', jwtHelper.verifyJwtToken, ctrlFarmer.getWarehouse);
 router.post('/warehouse', jwtHelper.verifyJwtToken, ctrlFarmer.updateWarehouse);
 
+router.get('/store', ctrlFarmer.getStore);
+
 router.get('/orderRequests/:warehouseId', jwtHelper.verifyJwtToken, ctrlFarmer.getOrderRequests);
 router.delete('/orderRequests/:orderId', jwtHelper.verifyJwtToken, ctrlFarmer.calncelOrderRequest);
-router.post('/orderRequests', ctrlFarmer.addOrderRequest);
+router.post('/orderRequests', jwtHelper.verifyJwtToken, ctrlFarmer.addOrderRequest);
 
 // company
-router.get('/orders/:companyId', ctrlCompany.getOrders);
-router.delete('/orders/:orderId', ctrlCompany.rejectOrder);
+router.get('/orders/:companyId', jwtHelper.verifyJwtToken, ctrlCompany.getOrders);
+router.delete('/orders/:orderId', jwtHelper.verifyJwtToken, ctrlCompany.rejectOrder);
 router.post('/orders', ctrlCompany.acceptOrder);
 
-router.post('/products', ctrlCompany.addProduct);
+router.get('/soldItemsPerDay/:companyId', ctrlCompany.getSoldItemsPerDay);
 
-router.get('/products/:companyId', ctrlCompany.getProducts);
-router.post('/products/:productId', ctrlCompany.updateProduct);
-router.delete('/products/:productId', ctrlCompany.deleteProduct);
+router.post('/products', jwtHelper.verifyJwtToken, ctrlCompany.addProduct);
+
+router.get('/products/:companyId', jwtHelper.verifyJwtToken, ctrlCompany.getProducts);
+router.post('/products/:productId', jwtHelper.verifyJwtToken, ctrlCompany.updateProduct);
+router.delete('/products/:productId', jwtHelper.verifyJwtToken, ctrlCompany.deleteProduct);
 
 
 

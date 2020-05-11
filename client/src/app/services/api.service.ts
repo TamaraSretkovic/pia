@@ -22,8 +22,10 @@ export class ApiService {
     updateSeedlingUrl = '/v0.1/updateSeedling';
     saveNurseryChangesUrl = '/v0.1/updateNursery';
     warehouseUrl = '/v0.1/warehouse';
+    storeUrl = '/v0.1/store';
     orderRequestUrl = '/v0.1/orderRequests';
     ordersUrl = '/v0.1/orders';
+    soldItemsPerDayUrl = '/v0.1/soldItemsPerDay';
     productsUrl = '/v0.1/products';
 
     constructor(private router: Router, private http: HttpClient,
@@ -185,6 +187,55 @@ export class ApiService {
         return this.http.delete<any>(`${this.baseUrl}${this.orderRequestUrl}/${orderId}`);
     }
 
+    getStore(): Observable<any> {
+        return this.http.get<any>(`${this.baseUrl}${this.storeUrl}`);
+    }
+
+    order(orderings: any[]) {
+        console.log(orderings);
+        console.log('ovo su bile ordering');
+
+        let orderRequests: any[] = [];
+        let orderRequestsHelper: any[] = [];
+
+        let found = false;
+        orderings.forEach(element => {
+            found = false;
+            orderRequestsHelper.forEach(elementHelper => {
+                if (element.companyId === elementHelper[0].companyId) {
+                    elementHelper.push(element);
+                    found = true;
+                }
+            });
+            if (!found) {
+                orderRequestsHelper.push([element]);
+            }
+        });
+        orderRequestsHelper.forEach(elementHelper => {
+            const order = {
+                warehouseId: elementHelper[0].warehouseId,
+                companyId: elementHelper[0].companyId,
+                producer: elementHelper[0].producer,
+                farmerUsername: this.getUsername(),
+                products: []
+            }
+            elementHelper.forEach(product => {
+                const productHelper = {
+                    productId: product.productId,
+                    name: product.name,
+                    type: product.type,
+                    quantity: product.quantity
+                }
+                order.products.push(productHelper);
+            });
+            orderRequests.push(order);
+        });
+
+        console.log(orderRequestsHelper);
+
+        return this.http.post<any>(`${this.baseUrl}${this.orderRequestUrl}`, {requests: orderRequests});
+    }
+
     // ****** company stuff *******
 
     getOrders(companyId: string): Observable<any> {
@@ -197,6 +248,9 @@ export class ApiService {
 
     acceptOrder(orderId: string): Observable<any> {
         return this.http.post<any>(`${this.baseUrl}${this.ordersUrl}`, orderId);
+    }
+    soldItemsPerDay(): Observable<any> {
+        return this.http.get<any>(`${this.baseUrl}${this.soldItemsPerDayUrl}/${this.getId()}`);
     }
 
     // ***** manage products *****

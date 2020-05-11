@@ -21,3 +21,4 @@ require('./warehous.model');
 require('./orderRequest.model');
 require('./orderRequest.model');
 require('./companyProduct.model');
+require('./soldOrder.model');

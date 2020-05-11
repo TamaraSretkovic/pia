@@ -14,14 +14,14 @@
                                     sort</label>
                                 <div class="clr-control-container" style="display: block; width: 100%;">
                                     <div class="clr-radio-wrapper">
-                                        <input type="radio" id="vertical-radio1" [(ngModel)]="sort"
-                                            name="radio-full" value="asc" class="clr-radio">
+                                        <input type="radio" id="vertical-radio1" [(ngModel)]="sort" name="radio-full"
+                                            value="asc" class="clr-radio">
                                         <label for="vertical-radio1" class="clr-control-label">Sort by Date
                                             ASC</label>
                                     </div>
                                     <div class="clr-radio-wrapper">
-                                        <input type="radio" id="vertical-radio2" [(ngModel)]="sort"
-                                            name="radio-full" value="dsc" class="clr-radio">
+                                        <input type="radio" id="vertical-radio2" [(ngModel)]="sort" name="radio-full"
+                                            value="dsc" class="clr-radio">
                                         <label for="vertical-radio2" class="clr-control-label">Sort by Date
                                             DESC</label>
                                     </div>
@@ -234,8 +234,8 @@
         <button clrTabLink>Business Results</button>
         <clr-tab-content *clrIfActive>
             <div class="chartContainer">
-                <canvas id="myChart">
-                    
+                <canvas baseChart [datasets]="chartData" [labels]="chartLabels" [options]="chartOptions"
+                    [legend]="chartLegend" [chartType]="chartType">
                 </canvas>
             </div>
         </clr-tab-content>

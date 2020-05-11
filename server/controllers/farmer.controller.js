@@ -7,6 +7,7 @@ const Warehouse = mongoose.model('Warehouse');
 const Product = mongoose.model('Product');
 const OrderRequest = mongoose.model('OrderRequest');
 const OrderProduct = mongoose.model('OrderProduct');
+const CompanyProduct = mongoose.model('CompanyProduct');
 
 module.exports.getNurserys = (req, res, next) => {
     Nursery.find({ farmerId: req.body.id }).then(result => {
@@ -174,51 +175,62 @@ module.exports.getOrderRequests = (req, res, next) => {
 }
 
 module.exports.calncelOrderRequest = (req, res, next) => {
-    OrderRequest.findOne({_id: req.params.orderId})
-    .then(doc => {
-        if(doc.status.valueOf()=== new String("pending").valueOf()){
-            OrderRequest.deleteOne({_id: req.params.orderId}).then(succsess => {
-                res.status(200).json({ message: "Order successfully canceled!" });
-            }).catch(err => {
-                console.log("error u cancelRequest delete");
-                res.status(400).json({ message: err });
-            });
-        } else {
-            res.status(400).json({ message: "Order is delivering, please wait!" });
-        }
-    })
+    OrderRequest.findOne({ _id: req.params.orderId })
+        .then(doc => {
+            if (doc.status.valueOf() === new String("pending").valueOf()) {
+                OrderRequest.deleteOne({ _id: req.params.orderId }).then(succsess => {
+                    res.status(200).json({ message: "Order successfully canceled!" });
+                }).catch(err => {
+                    console.log("error u cancelRequest delete");
+                    res.status(400).json({ message: err });
+                });
+            } else {
+                res.status(400).json({ message: "Order is delivering, please wait!" });
+            }
+        })
         .catch(err => {
             console.log("error u cancelRequest find");
             res.status(400).json({ message: err });
         });
 }
 
+module.exports.getStore = (req, res, next) => {
+    CompanyProduct.find().then(doc => {
+        res.status(200).send(doc);
+    }).catch(err => {
+        console.log("error u get store");
+        res.status(400).json({ message: err });
+    });
+}
+
 module.exports.addOrderRequest = (req, res, next) => {
-    var order = new OrderRequest();
-    order.warehouseId = req.body.warehouseId;
-    order.companyId = req.body.companyId;
-    order.producer = req.body.producer;
-    order.status = "pending";
-    order.date = new Date();
-    order.farmerUsername = req.body.username;
-    order.products = [];
+    req.body.requests.forEach(element => {
+        var order = new OrderRequest();
+        order.warehouseId = element.warehouseId;
+        order.companyId = element.companyId;
+        order.producer = element.producer;
+        order.status = "pending";
+        order.date = new Date();
+        order.farmerUsername = element.username;
+        order.products = [];
 
-    req.body.products.forEach(product => {
-        var newProduct = new OrderProduct();
-        newProduct.productId = product.productId;
-        newProduct.name = product.name;
-        newProduct.type = product.type;
-        newProduct.quantity = product.quantity;
+        element.products.forEach(product => {
+            var newProduct = new OrderProduct();
+            newProduct.productId = product.productId;
+            newProduct.name = product.name;
+            newProduct.type = product.type;
+            newProduct.quantity = product.quantity;
 
-        order.products.push(product);
+            order.products.push(product);
+        });
+
+        order.save((err, doc) => {
+            if (err) {
+                console.log("error u add order requests");
+                res.status(400).json({ message: err });
+            }
+        })
     });
 
-    order.save((err, doc) => {
-        if (!err)
-            res.send({ message: 'Successfully added new order Request!' });
-        else {
-            console.log("error u add order requests");
-            res.status(400).json({ message: err });
-        }
-    })
+    res.status(200).json({ message: 'Succsessfully sent Order Request!' });
 }

@@ -191,3 +191,41 @@ clr-tab-content, clr-tab {
 .red {
     background-color: hsl(9, 83%, 76%);
 }
+
+.orderList {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    border-bottom: 1px solid black;
+}
+
+.productList {
+    height: 85px;
+}
+
+.allProductsList {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    border-bottom: 1px solid black;
+    height: 205px;
+}
+
+.seedling {
+background-color: hsl(93, 52%, 88%);
+}
+
+.product {
+background-color: hsl(198, 83%, 94%);
+}
+
+.basketContainer {
+    width: 500px;
+    height: 500px;
+    overflow-y: scroll;
+    margin: auto;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,.5);
+}

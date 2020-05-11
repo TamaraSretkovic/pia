@@ -27,11 +27,16 @@ export class NurseryComponent implements OnInit, OnDestroy {
   avilabileSeeds: Array<any>;
   avilabileSuplements: Array<any>;
 
-
   avilabileSeedsFiltered: Array<any>;
   avilabileSuplementsFiltered: Array<any>;
 
   orderRequests: Array<any>;
+
+  companyProducts: Array<any>;
+  companyProductsFiltered: Array<any>;
+  basket: Array<any>;
+  orderingProduct: any;
+  quantity: number;
 
   menagingSeedling: Seedling;
   menagingOrder: Seedling;
@@ -39,10 +44,12 @@ export class NurseryComponent implements OnInit, OnDestroy {
   updateSeed: boolean;
   transplantSeedModal: boolean;
   addSuplementModal: boolean;
-
+  basketModal: boolean;
+  orderingModal: boolean;
   modal: boolean;
   modalContent: string;
   modalTitle: string;
+
   selectedSeed: string;
   selectedSuplement: string;
 
@@ -123,6 +130,7 @@ export class NurseryComponent implements OnInit, OnDestroy {
     this.fetching = true;
     this.nursery = new Nursery();
     this.filter = 'name';
+    this.basket = [];
   }
 
   ngOnInit(): void {
@@ -130,6 +138,7 @@ export class NurseryComponent implements OnInit, OnDestroy {
       this.id = params['id'];
       this.getNursery();
       this.getWarehouse();
+      this.getStore();
     });
   }
 
@@ -185,21 +194,23 @@ export class NurseryComponent implements OnInit, OnDestroy {
   }
 
   getOrderRequests() {
+    this.orderRequests = [];
     this.service.getOrderRequests(this.warehouseId).subscribe(data => {
-      this.orderRequests = [];
       data.forEach(request => {
-        const order = {
-          companyId: request.companyId,
-          orderId: request._id,
-          name: request.name,
-          producer: request.producer,
-          type: request.type,
-          quantity: request.quantity,
-          status: request.status
-        }
-        this.orderRequests.push(order);
+        this.orderRequests.push(request);
       });
     });
+  }
+
+  getStore() {
+    this.companyProducts = [];
+    this.companyProductsFiltered = [];
+    this.service.getStore().subscribe(data => {
+      data.forEach(product => {
+        this.companyProducts.push(product);
+      });
+    });
+    this.companyProductsFiltered = this.companyProducts;
   }
 
   updateWarehouse() {
@@ -236,12 +247,14 @@ export class NurseryComponent implements OnInit, OnDestroy {
   }
 
   cancel() {
-    // za 3 modala
+    // za sve modale
     this.updateSeed = false;
     this.transplantSeedModal = false;
     this.addSuplementModal = false;
+    this.orderingModal = false;
     this.menagingSeedling = undefined;
     this.selectedSuplement = undefined;
+    this.orderingProduct = undefined;
   }
 
   add() {
@@ -368,7 +381,7 @@ export class NurseryComponent implements OnInit, OnDestroy {
   }
 
   cancelOrder(order: any) {
-    this.service.cancelOrderRequests(order.orderId).subscribe(ress => {
+    this.service.cancelOrderRequests(order._id).subscribe(ress => {
       this.modalTitle = 'Cancel Request';
       this.modalContent = ress.message;
       this.modal = true;
@@ -393,5 +406,54 @@ export class NurseryComponent implements OnInit, OnDestroy {
   filterByQuantity() {
     this.avilabileSeedsFiltered = this.helper.filterByNumber(this.filterNumber, this.avilabileSeeds);
     this.avilabileSuplementsFiltered = this.helper.filterByNumber(this.filterNumber, this.avilabileSuplements);
+  }
+
+  info(product){}
+
+  enterQuantity(product){
+    this.orderingProduct = product;
+    this.quantity = 1;
+    this.orderingModal = true;
+  }
+
+  addToBasket() {
+    const order = {
+      companyId: this.orderingProduct.companyId,
+      name: this.orderingProduct.name,
+      producer: this.orderingProduct.producer,
+      type: this.orderingProduct.type,
+      quantity: this.quantity,
+      price: this.orderingProduct.price,
+      warehouseId: this.warehouseId,
+      productId: this.orderingProduct._id
+    }
+    this.basket.push(order);
+    this.cancel();
+  }
+
+  deleteFromBasket(index){
+    this.basket.splice(index, 1);
+  }
+
+  cancelOrdering(){
+    this.basket = [];
+    this.basketModal = false;
+  }
+
+  order(){
+    console.log('client order');
+    
+    this.basketModal = false;
+    this.service.order(this.basket).subscribe(ress => {
+      this.modalTitle = 'Order Request';
+      this.modalContent = ress.message;
+      this.modal = true;
+      this.basket = [];
+      this.getOrderRequests();
+    }, err => {
+      this.modalTitle = 'Order Request';
+      this.modalContent = err.message;
+      this.modal = true;
+    });
   }
 }
