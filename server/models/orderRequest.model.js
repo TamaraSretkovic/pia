@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 var orderRequestShema = new mongoose.Schema({
-    warehouseId: {
+    nurseryId: {
         type: String,
     },
     farmerUsername: {

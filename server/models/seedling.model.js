@@ -4,6 +4,9 @@ var seedling = new mongoose.Schema({
     name: {
         type: String
     },
+    productId: {
+        type: String
+    },
     producer: {
         type: String
     },

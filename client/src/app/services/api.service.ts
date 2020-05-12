@@ -179,8 +179,8 @@ export class ApiService {
         return this.http.post<any>(`${this.baseUrl}${this.warehouseUrl}`, { id: nurseryId, seedlings: seedlings, products: products });
     }
 
-    getOrderRequests(warehouseId: string): Observable<any> {
-        return this.http.get<any>(`${this.baseUrl}${this.orderRequestUrl}/${warehouseId}`);
+    getOrderRequests(nurseryId: string): Observable<any> {
+        return this.http.get<any>(`${this.baseUrl}${this.orderRequestUrl}/${nurseryId}`);
     }
 
     cancelOrderRequests(orderId: string): Observable<any> {
@@ -213,7 +213,7 @@ export class ApiService {
         });
         orderRequestsHelper.forEach(elementHelper => {
             const order = {
-                warehouseId: elementHelper[0].warehouseId,
+                nurseryId: elementHelper[0].nurseryId,
                 companyId: elementHelper[0].companyId,
                 producer: elementHelper[0].producer,
                 farmerUsername: this.getUsername(),
@@ -242,12 +242,12 @@ export class ApiService {
         return this.http.get<any>(`${this.baseUrl}${this.ordersUrl}/${companyId}`);
     }
 
-    rejectOrder(orderId: string): Observable<any> {
+    rejectOrder(orderId: any): Observable<any> {
         return this.http.delete<any>(`${this.baseUrl}${this.ordersUrl}/${orderId}`);
     }
 
-    acceptOrder(orderId: string): Observable<any> {
-        return this.http.post<any>(`${this.baseUrl}${this.ordersUrl}`, orderId);
+    acceptOrder(orderId: any): Observable<any> {
+        return this.http.post<any>(`${this.baseUrl}${this.ordersUrl}`, {orderId: orderId});
     }
     soldItemsPerDay(): Observable<any> {
         return this.http.get<any>(`${this.baseUrl}${this.soldItemsPerDayUrl}/${this.getId()}`);

@@ -46,6 +46,7 @@ module.exports.addNursery = (req, res, next) => {
         seedling.fullTime = '';
         seedling.progress = 0;
         seedling.status = 'empty';
+        seedling.productId = '';
         nursery.seedlings.push(seedling);
     };
 
@@ -78,6 +79,7 @@ module.exports.updateSeedling = (req, res, next) => {
         nursery.seedlings[id].progress = req.body.seedling.progress;
         nursery.seedlings[id].quantity = req.body.seedling.quantity;
         nursery.seedlings[id].status = req.body.seedling.status;
+        nursery.seedlings[id].productId = req.body.seedling.productId;
 
         if (req.body.seedling.status === 'full') {
             nursery.numSeedlings++;
@@ -138,6 +140,7 @@ module.exports.updateWarehouse = (req, res, next) => {
             seedling.progress = seed.progress;
             seedling.quantity = seed.quantity;
             seedling.status = seed.status;
+            seedling.productId = seed.productId;
             warehouse.seedlings.push(seedling);
         });
 
@@ -147,6 +150,7 @@ module.exports.updateWarehouse = (req, res, next) => {
             prod.name = product.name;
             prod.producer = product.producer;
             prod.power = product.power;
+            prod.productId = product.productId;
             prod.quantity = product.quantity;
             warehouse.products.push(prod);
         });
@@ -166,7 +170,7 @@ module.exports.updateWarehouse = (req, res, next) => {
 
 module.exports.getOrderRequests = (req, res, next) => {
 
-    OrderRequest.find({ warehouseId: req.params.warehouseId }).then(doc => {
+    OrderRequest.find({ nurseryId: req.params.nurseryId }).then(doc => {
         res.status(200).send(doc);
     }).catch(err => {
         console.log("error u get orderRequests");
@@ -206,12 +210,12 @@ module.exports.getStore = (req, res, next) => {
 module.exports.addOrderRequest = (req, res, next) => {
     req.body.requests.forEach(element => {
         var order = new OrderRequest();
-        order.warehouseId = element.warehouseId;
+        order.nurseryId = element.nurseryId;
         order.companyId = element.companyId;
         order.producer = element.producer;
         order.status = "pending";
         order.date = new Date();
-        order.farmerUsername = element.username;
+        order.farmerUsername = element.farmerUsername;
         order.products = [];
 
         element.products.forEach(product => {

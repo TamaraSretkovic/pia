@@ -17,7 +17,7 @@ module.exports.getOrders = (req, res, next) => {
 }
 
 module.exports.rejectOrder = (req, res, next) => {
-    deleteOne({ _id: req.params.orderId }).then(succsess => {
+    OrderRequest.deleteOne({ _id: req.params.orderId }).then(succsess => {
         res.status(200).json({ message: "Order successfully rejected!" });
     }).catch(err => {
         console.log("error u rejectOrder delete");
@@ -52,12 +52,14 @@ module.exports.acceptOrder = (req, res, next) => {
                         sold.companyId = orderRequest.companyId;
                         sold.date = orderRequest.date;
                         var companyIdSaved = orderRequest.companyId;
+                        var nurseryIdSaved = orderRequest.nurseryId;
 
                         sold.save().then(ress => {
-                           OrderRequest.deleteOne({ _id: req.body.orderId }).then(ress => {
-                                // TO DO POKRENI PROCES
-                                const childProcess = fork('./curir.js');
-                                childProcess.send({ "companyId": companyIdSaved, mils: 60000 });
+                            // TO DO POKRENI PROCES
+                            const childProcess = fork('./curir.js');
+                            childProcess.send({ "companyId": companyIdSaved, "nurseryId": nurseryIdSaved, "orderId": req.body.orderId});
+                            
+                           OrderRequest.updateOne({ _id: req.body.orderId }, {status: 'delivering'}).then(ress => {
                                 res.status(200).json({ message: 'Courier is on the way!' });
                             }).catch(err => {
                                 console.log("error u deleteone orderReq");

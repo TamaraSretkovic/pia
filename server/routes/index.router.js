@@ -42,13 +42,13 @@ router.post('/warehouse', jwtHelper.verifyJwtToken, ctrlFarmer.updateWarehouse);
 
 router.get('/store', ctrlFarmer.getStore);
 
-router.get('/orderRequests/:warehouseId', jwtHelper.verifyJwtToken, ctrlFarmer.getOrderRequests);
+router.get('/orderRequests/:nurseryId', jwtHelper.verifyJwtToken, ctrlFarmer.getOrderRequests);
 router.delete('/orderRequests/:orderId', jwtHelper.verifyJwtToken, ctrlFarmer.calncelOrderRequest);
 router.post('/orderRequests', jwtHelper.verifyJwtToken, ctrlFarmer.addOrderRequest);
 
 // company
 router.get('/orders/:companyId', jwtHelper.verifyJwtToken, ctrlCompany.getOrders);
-router.delete('/orders/:orderId', jwtHelper.verifyJwtToken, ctrlCompany.rejectOrder);
+router.delete('/orders/:orderId', ctrlCompany.rejectOrder);
 router.post('/orders', ctrlCompany.acceptOrder);
 
 router.get('/soldItemsPerDay/:companyId', ctrlCompany.getSoldItemsPerDay);

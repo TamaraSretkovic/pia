@@ -7,6 +7,9 @@ var productShema = new mongoose.Schema({
     producer: {
         type: String
     },
+    productId: {
+        type: String
+    },
     power: {
         type: Number
     },

@@ -195,7 +195,7 @@ export class NurseryComponent implements OnInit, OnDestroy {
 
   getOrderRequests() {
     this.orderRequests = [];
-    this.service.getOrderRequests(this.warehouseId).subscribe(data => {
+    this.service.getOrderRequests(this.id).subscribe(data => {
       data.forEach(request => {
         this.orderRequests.push(request);
       });
@@ -424,7 +424,7 @@ export class NurseryComponent implements OnInit, OnDestroy {
       type: this.orderingProduct.type,
       quantity: this.quantity,
       price: this.orderingProduct.price,
-      warehouseId: this.warehouseId,
+      nurseryId: this.id,
       productId: this.orderingProduct._id
     }
     this.basket.push(order);

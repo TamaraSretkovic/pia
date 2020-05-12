@@ -94,7 +94,7 @@ export class CompanyComponent implements OnInit {
       data.forEach(order => {
         if (order.status === 'pending') { // sta ces sa ovim statusima?
           this.oRequests.push(order);
-        } else {
+        } else if (order.status === 'important') {
           this.iRequests.push(order);
         }
       });
@@ -196,7 +196,32 @@ export class CompanyComponent implements OnInit {
     });
   }
 
-  acceptRequest(product) { }
+  acceptRequest(request) {
+    console.log(request);
+    
+    this.service.acceptOrder(request._id).subscribe(ress => {
+      this.modalTitle = 'Accept Order Request';
+      this.modalContent = ress.message;
+      this.modal = true;
+      this.getOrders();
+    }, err => {
+      this.modalTitle = 'Accept Order Request';
+      this.modalContent = err.message;
+      this.modal = true;
+    });
+  }
 
-  deleteRequest(product) { }
+  deleteRequest(request) {
+    console.log(request);
+    this.service.rejectOrder(request._id).subscribe(ress => {
+      this.modalTitle = 'Reject Order Request';
+      this.modalContent = ress.message;
+      this.modal = true;
+      this.getOrders();
+    }, err => {
+      this.modalTitle = 'Accept Order Request';
+      this.modalContent = err.message;
+      this.modal = true;
+    });
+  }
 }
