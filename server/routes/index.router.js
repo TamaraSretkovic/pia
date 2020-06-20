@@ -11,7 +11,7 @@ const jwtHelper = require('../config/jwtHelper');
 
 router.post('/login', ctrlUser.authenticate);
 router.post('/registration_request', ctrlRegisterRequest.registrationRequest);
-
+router.post('/rechapthca_request', ctrlRegisterRequest.rechaptcha);
 
 // private routes
 
@@ -40,7 +40,7 @@ router.post('/updateNursery', jwtHelper.verifyJwtToken, ctrlFarmer.updateNursery
 router.get('/warehouse/:nurseryId', jwtHelper.verifyJwtToken, ctrlFarmer.getWarehouse);
 router.post('/warehouse', jwtHelper.verifyJwtToken, ctrlFarmer.updateWarehouse);
 
-router.get('/store', ctrlFarmer.getStore);
+router.get('/store', jwtHelper.verifyJwtToken, ctrlFarmer.getStore);
 
 router.get('/orderRequests/:nurseryId', jwtHelper.verifyJwtToken, ctrlFarmer.getOrderRequests);
 router.delete('/orderRequests/:orderId', jwtHelper.verifyJwtToken, ctrlFarmer.calncelOrderRequest);
@@ -48,10 +48,10 @@ router.post('/orderRequests', jwtHelper.verifyJwtToken, ctrlFarmer.addOrderReque
 
 // company
 router.get('/orders/:companyId', jwtHelper.verifyJwtToken, ctrlCompany.getOrders);
-router.delete('/orders/:orderId', ctrlCompany.rejectOrder);
-router.post('/orders', ctrlCompany.acceptOrder);
+router.delete('/orders/:orderId', jwtHelper.verifyJwtToken, ctrlCompany.rejectOrder);
+router.post('/orders', jwtHelper.verifyJwtToken, ctrlCompany.acceptOrder);
 
-router.get('/soldItemsPerDay/:companyId', ctrlCompany.getSoldItemsPerDay);
+router.get('/soldItemsPerDay/:companyId', jwtHelper.verifyJwtToken, ctrlCompany.getSoldItemsPerDay);
 
 router.post('/products', jwtHelper.verifyJwtToken, ctrlCompany.addProduct);
 

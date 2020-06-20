@@ -41,13 +41,26 @@ export class RegistrationComponent implements OnInit {
   modal: boolean;
   modalContent: string;
 
+  // rechaptcha: any;
+  // notRobot: boolean;
   data: any;
 
   constructor(private service: ApiService, private router: Router) {
+    // this.notRobot = false;
   }
 
   ngOnInit(): void {
   }
+
+  // resolved(RechaptchaResponse: any){
+  //   this.rechaptcha = RechaptchaResponse;
+  //   console.log(this.rechaptcha);
+  //   this.service.rechaptchaRequest(this.rechaptcha).subscribe(ress => {
+  //     if(ress===true){
+  //       this.notRobot = true;
+  //     }
+  //   })
+  // }
 
   registerFarmer(): void {
     this.showPasswordErrorMessage = false;

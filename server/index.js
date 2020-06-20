@@ -2,7 +2,6 @@ require('./config/config');
 require('./models/db');
 require('./config/passportConfig');
 // require('./updateFarmer');
-// require('./updateCompany');
 
 const express = require('express');
 const bodyParser = require('body-parser');

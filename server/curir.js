@@ -55,7 +55,7 @@ var updateCourier = function () {
                                 seedling.progress = 0;
                                 seedling.quantity = Number(savedProdut.quantity);
                                 seedling.status = 'full';
-                                warehouse.seedlings.push({ seedling });
+                                warehouse.seedlings.push(seedling);
                             });
                         }
                     } else {
@@ -75,7 +75,7 @@ var updateCourier = function () {
                                 productNew.producer = doc.producer;
                                 productNew.fullTime = doc.power;
                                 productNew.quantity = Number(savedProdut.quantity);
-                                warehouse.products.push({ productNew });
+                                warehouse.products.push(productNew);
                                 
                             });
                         }

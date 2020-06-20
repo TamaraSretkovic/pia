@@ -229,3 +229,13 @@ background-color: hsl(198, 83%, 94%);
     background-color: white;
     box-shadow: 0 5px 15px rgba(0,0,0,.5);
 }
+
+.unavilable {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.disabled {
+    pointer-events: none;
+
+}

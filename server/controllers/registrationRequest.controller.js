@@ -1,7 +1,33 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
+const https = require('https');
+var request = require('request');
+const secretKey = process.env.SECRET_KEY;
 
 const RegistrationRequest = mongoose.model('RegistrationRequest');
+
+module.exports.rechaptcha = (req, res, next) => {
+    getRechaptchaResponse(req.body.request, (status, response) => {
+        console.log('odgovorio sa');
+        console.log(response);
+        res.send(response.success);
+    });
+}
+
+var getRechaptchaResponse = (clientReposnse, onResult) => {
+    request.post(
+        'https://www.google.com/recaptcha/api/siteverify',
+        { json: { response: clientReposnse,
+            secret: secretKey } },
+        function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                console.log(body);
+                onResult(body);
+            }
+        }
+    );
+};
+
 
 module.exports.getRegistrationRequests = (req, res, next) => {
     RegistrationRequest.find().then(documents => {
@@ -24,7 +50,7 @@ module.exports.registrationRequest = (req, res, next) => {
             res.send({ message: 'Successfully sent registration request!' });
         else {
             if (err.code == 11000)
-                res.status(400).send({ message:'Duplicate username found.'});
+                res.status(400).send({ message: 'Duplicate username found.' });
             else
                 return next(err);
         }

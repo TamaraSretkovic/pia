@@ -4,16 +4,15 @@ var nodemailer = require('nodemailer');
 const Nursery = mongoose.model('Nursery');
 const User = mongoose.model('User');
 
-let counter = 23; // count hours
+let counter = 0; // count hours
 
 let update = function () {
+    counter++;
     Nursery.find().then(doc => {
         doc.forEach(nursery => {
-            counter++;
             nursery.temp = nursery.temp - 0.5;
             nursery.water = (nursery.water - 1) > 0 ? nursery.water - 1 : 0;
             if(counter === 24){
-                counter = 0;
                 nursery.seedlings.forEach(seed => {
                     if (seed.status === 'full' && seed.progress < seed.fullTime) {
                         seed.progress = seed.progress + 1;
@@ -38,6 +37,10 @@ let update = function () {
             console.log("error u get nurserys u updater-u");
             console.log(err);
         });
+
+    if(counter === 24){
+        counter = 0;
+    }
 }
 
 let transporter = nodemailer.createTransport({
@@ -47,7 +50,7 @@ let transporter = nodemailer.createTransport({
     requireTLS: true,
     auth: {
       user: 'sretkovictamara@gmail.com',
-      pass: 'plavaarticoka'
+      pass: 'jxggteumtliefxow'
     }
 });
 
@@ -75,4 +78,4 @@ let sendMail = function(farmerId){
 }
 
 
-setInterval(update, 10000); // 10s
+setInterval(update, 3600000); // 1h

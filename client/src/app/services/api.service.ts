@@ -15,6 +15,7 @@ export class ApiService {
     loginUrl = '/v0.1/login';
     registerUserUrl = '/v0.1/register_user';
     changePasswordUrl = '/v0.1/change_password';
+    // rechaptchaRequestsUrl = '/v0.1/rechapthca_request';
     registrationRequestsUrl = '/v0.1/registration_request';
     usersUrl = '/v0.1/users';
     nurseryUrl = '/v0.1/nursery';
@@ -98,6 +99,10 @@ export class ApiService {
     }
 
     // **** registration stuff ****
+
+    // rechaptchaRequest(request: any){
+    //     return this.http.post<any>(`${this.baseUrl}${this.rechaptchaRequestsUrl}`, {request: request});
+    // }
 
     registrationRequest(userInfo: any): Observable<any> {
         return this.http.post<any>(`${this.baseUrl}${this.registrationRequestsUrl}`, userInfo);

@@ -247,7 +247,8 @@
                 <h3 class="title">Online Store</h3>
                 <h4 class="title" *ngIf="companyProductsFiltered.length === 0">No seedlings!</h4>
                 <div class="allProductsList" *ngFor="let product of companyProductsFiltered"
-                    [ngClass]="{'seedling': product.type === 'seed', 'product': product.type === 'product'}">
+                    [ngClass]="{'seedling': product.type === 'seed', 'product': product.type === 'product',
+                                'unavilable': product.quantity === 0}">
                     <div class="userInfo">
                         <span class="userLabel">Product name</span>
                         <span class="userInput"> {{ product.name }} </span>
@@ -265,7 +266,7 @@
                         <span class="userInput"> {{ product.price }} </span>
                     </div>
                     <div class="userInfo">
-                        <div class="btn-group btn-primary groupBtn" style="width: 100%;">
+                        <div class="btn-group btn-primary groupBtn" [ngClass]="{'disabled': product.quantity === 0}" style="width: 100%;">
                             <button class="btn btn-primary button" style="width: 50%;" (click)="info(product)">Info</button>
                             <button class="btn btn-success button" style="width: 50%;" (click)="enterQuantity(product)">Add to custumer basket</button>
                         </div>

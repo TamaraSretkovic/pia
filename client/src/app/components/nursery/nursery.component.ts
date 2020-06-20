@@ -261,12 +261,9 @@ export class NurseryComponent implements OnInit, OnDestroy {
     let i = 0;
     this.updateSeed = false;
     console.log('add');
-
     const oldSeedling = Object(this.menagingSeedling);
-    console.log(this.avilabileSeeds);
-
     this.avilabileSeeds.forEach(el => {
-      if (this.selectedSeed === el._id) {
+      if (this.selectedSeed == el._id) {
         this.menagingSeedling.name = el.name;
         this.menagingSeedling.producer = el.producer;
         this.menagingSeedling.fullTime = el.fullTime;
@@ -281,10 +278,13 @@ export class NurseryComponent implements OnInit, OnDestroy {
           if (el.quantity === 0) {
             this.avilabileSeeds.splice(index, 1);
           }
+          this.selectedSeed = undefined;
           this.modalContent = res.message;
           this.service.updateWarehouse(this.id, this.avilabileSeeds, this.avilabileSuplements).subscribe(res => {
             this.modalTitle = 'Seedling Addition';
             this.modal = true;
+            this.menagingSeedling = undefined;
+
           }, err => {
             this.menagingSeedling = oldSeedling;
             this.modalTitle = 'Update warehous';
@@ -300,6 +300,8 @@ export class NurseryComponent implements OnInit, OnDestroy {
         return;
       } else {
         i++;
+        console.log('else');
+
       }
     })
     this.menagingSeedling = undefined;
@@ -408,9 +410,9 @@ export class NurseryComponent implements OnInit, OnDestroy {
     this.avilabileSuplementsFiltered = this.helper.filterByNumber(this.filterNumber, this.avilabileSuplements);
   }
 
-  info(product){}
+  info(product) { }
 
-  enterQuantity(product){
+  enterQuantity(product) {
     this.orderingProduct = product;
     this.quantity = 1;
     this.orderingModal = true;
@@ -431,18 +433,18 @@ export class NurseryComponent implements OnInit, OnDestroy {
     this.cancel();
   }
 
-  deleteFromBasket(index){
+  deleteFromBasket(index) {
     this.basket.splice(index, 1);
   }
 
-  cancelOrdering(){
+  cancelOrdering() {
     this.basket = [];
     this.basketModal = false;
   }
 
-  order(){
+  order() {
     console.log('client order');
-    
+
     this.basketModal = false;
     this.service.order(this.basket).subscribe(ress => {
       this.modalTitle = 'Order Request';
